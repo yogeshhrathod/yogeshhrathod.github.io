@@ -1,0 +1,39 @@
+{
+  "files": {
+    "main.css": "/developerFolio/static/css/main.0dd77a08.chunk.css",
+    "main.js": "/developerFolio/static/js/main.6f3a3fee.chunk.js",
+    "main.js.map": "/developerFolio/static/js/main.6f3a3fee.chunk.js.map",
+    "runtime-main.js": "/developerFolio/static/js/runtime-main.b0cfc418.js",
+    "runtime-main.js.map": "/developerFolio/static/js/runtime-main.b0cfc418.js.map",
+    "static/js/2.4f298c36.chunk.js": "/developerFolio/static/js/2.4f298c36.chunk.js",
+    "static/js/2.4f298c36.chunk.js.map": "/developerFolio/static/js/2.4f298c36.chunk.js.map",
+    "static/css/3.3a26ebde.chunk.css": "/developerFolio/static/css/3.3a26ebde.chunk.css",
+    "static/js/3.01add832.chunk.js": "/developerFolio/static/js/3.01add832.chunk.js",
+    "static/js/3.01add832.chunk.js.map": "/developerFolio/static/js/3.01add832.chunk.js.map",
+    "static/css/4.21259c32.chunk.css": "/developerFolio/static/css/4.21259c32.chunk.css",
+    "static/js/4.5c6d3a15.chunk.js": "/developerFolio/static/js/4.5c6d3a15.chunk.js",
+    "static/js/4.5c6d3a15.chunk.js.map": "/developerFolio/static/js/4.5c6d3a15.chunk.js.map",
+    "index.html": "/developerFolio/index.html",
+    "precache-manifest.ac301ba79347b68cc91ed12966660f69.js": "/developerFolio/precache-manifest.ac301ba79347b68cc91ed12966660f69.js",
+    "service-worker.js": "/developerFolio/service-worker.js",
+    "static/css/3.3a26ebde.chunk.css.map": "/developerFolio/static/css/3.3a26ebde.chunk.css.map",
+    "static/css/4.21259c32.chunk.css.map": "/developerFolio/static/css/4.21259c32.chunk.css.map",
+    "static/css/main.0dd77a08.chunk.css.map": "/developerFolio/static/css/main.0dd77a08.chunk.css.map",
+    "static/js/2.4f298c36.chunk.js.LICENSE.txt": "/developerFolio/static/js/2.4f298c36.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/developerFolio/static/media/Montserrat-Regular.ee653992.ttf",
+    "static/media/Pict_logo.png": "/developerFolio/static/media/Pict_logo.10894338.png",
+    "static/media/contactMailDark.svg": "/developerFolio/static/media/contactMailDark.51cf7192.svg",
+    "static/media/developerActivity.svg": "/developerFolio/static/media/developerActivity.59389695.svg",
+    "static/media/geospoc.png": "/developerFolio/static/media/geospoc.058a8f8b.png",
+    "static/media/manOnTable.svg": "/developerFolio/static/media/manOnTable.52be3144.svg",
+    "static/media/skill.svg": "/developerFolio/static/media/skill.34409398.svg",
+    "static/media/TalkCard.css": "/developerFolio/static/media/talksCardBack.39eff4a9.svg",
+    "static/media/ubisoft.png": "/developerFolio/static/media/ubisoft.d3a26928.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b0cfc418.js",
+    "static/js/2.4f298c36.chunk.js",
+    "static/css/main.0dd77a08.chunk.css",
+    "static/js/main.6f3a3fee.chunk.js"
+  ]
+}
