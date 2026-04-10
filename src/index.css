@@ -2,7 +2,7 @@
 
 @theme {
   --color-obsidian: #020202;
-  --color-molten: #ff3300;
+  --color-molten-red: #ff3300;
   --color-stark: #ffffff;
   
   --font-titan: "Inter", system-ui, sans-serif;
@@ -109,6 +109,14 @@
     transform: rotate(25deg);
     filter: blur(40px);
     pointer-events: none;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
   }
 }
 

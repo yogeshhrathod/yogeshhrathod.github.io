@@ -91,20 +91,32 @@ export default function App() {
 
   // Resume Data
   const projects = [
-    { title: "REMEMBERIT", desc: "Tag-Based File Explorer (Electron/SQLite)", date: "2024" },
-    { title: "ANAYAS", desc: "Advanced RIP REST Client / Postman Alternative", date: "2023 - PRESENT" },
-    { title: "MARITIME AIS", desc: "Global Ship Tracking System (Gov. Project)", date: "2021" },
-    { title: "SIMPLIFIED CREDIT", desc: "Financial Loan Aggregator & Automation", date: "2020" },
+    { title: "REMEMBERIT", desc: "The Tag-Based File Explorer (Electron/SQLite). Intuitive drag and drop file organization, filtering, and reference management without relocating files.", date: "2024" },
+    { title: "ANAYAS", desc: "Advanced REST Client / Postman Alternative. API-dependent calls for better data fetching. Open source.", date: "10/2023 - PRESENT", github: "https://github.com/yogeshhrathod/Anayas" },
+    { title: "AIS", desc: "Global Ship Tracking System (Gov Project). Analyzed past activities and identified suspicious maritime behavior in real-time.", date: "01/2021 - 12/2021" },
+    { title: "SIMPLIFIED CREDIT", desc: "Financial Loan Aggregator. Automated generation of detailed Financial Models and Reports for bank viability assessments.", date: "01/2020 - 12/2020" },
   ];
 
   const experience = [
-    { company: "QUALYS", role: "FULL STACK NODE DEVELOPER", period: "2021 - PRESENT", bullet: "Architected gigabyte-scale reporting infrastructure." },
-    { company: "GEOSPOC", role: "FULL STACK NODE DEVELOPER", period: "2020 - 2021", bullet: "Built GeoQi backend & Mapbox visualization engine." },
-    { company: "REDPANDA", role: "FULL STACK NODE DEVELOPER", period: "2019 - 2020", bullet: "Led end-to-end full stack execution for international clients." },
+    { company: "QUALYS", role: "FULL STACK NODE DEVELOPER", period: "10/2021 - PRESENT", bullet: "Architected gigabyte-scale reporting infrastructure. Migrated JS to TypeScript." },
+    { company: "GEOSPOC", role: "FULL STACK NODE DEVELOPER", period: "09/2020 - 09/2021", bullet: "Built GeoQi backend on AWS & Mapbox real-time visualization engine." },
+    { company: "REDPANDA", role: "FULL STACK NODE DEVELOPER", period: "01/2019 - 12/2020", bullet: "Led full-stack (Vue, Node, MongoDB) end-to-end execution for global clients." },
+  ];
+
+  const education = [
+    { degree: "BE COMPUTER", institute: "PUNE INSTITUTE OF COMPUTER TECHNOLOGY", period: "06/2016 - 06/2019", location: "PUNE" }
+  ];
+
+  const achievements = [
+    { title: "1ST PRIZE", desc: "Software Development - Credenz'17 at PICT" },
+    { title: "2ND PRIZE", desc: "Best Project Idea - SPECTER'17 at Zeal College" },
+    { title: "3RD PRIZE", desc: "GameJam'18 organized at UBISOFT" }
   ];
 
   const skills = [
-    "TYPESCRIPT", "NODEJS", "REACTJS", "VUEJS", "AWS", "ELECTRON", "POSTGRESQL", "CI/CD", "MICROSERVICES", "MAPBOX"
+    "TYPESCRIPT", "NODEJS", "REACTJS", "VUEJS", "ANGULAR", "EXPRESSJS", 
+    "POSTGRESQL", "AWS", "ELECTRON", "CI/CD", "CYPRESS", "MICROSERVICES", 
+    "MAPBOX", "NESTJS", "MONGODB"
   ];
 
   // Handle Mouse Move for Steadicam
@@ -160,7 +172,7 @@ export default function App() {
   }, []);
 
   const cameraTransform = useMemo(() => {
-    const isContactPage = lerpedScroll >= 4500;
+    const isContactPage = lerpedScroll >= 7000;
     const tiltX = isContactPage ? 0 : (mousePos.y * 5 + drift.y * 0.2);
     const tiltY = isContactPage ? 0 : (-mousePos.x * 5 + drift.x * 0.2);
     
@@ -171,7 +183,7 @@ export default function App() {
 
   return (
     <div 
-      className="relative min-h-[700vh] bg-obsidian transition-colors duration-700"
+      className="relative min-h-[900vh] bg-obsidian transition-colors duration-700"
       ref={containerRef}
     >
       <div className="vignette" />
@@ -250,45 +262,56 @@ export default function App() {
            />
         </section>
 
-        {/* SHOT 02: THE ARCHIVE (PROJECTS) - MONOLITHIC SLABS */}
+        {/* SHOT 02: THE ARCHIVE (PROJECTS) - REVOLVER ROLLING */}
         <section className={cn(
-          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12",
-          lerpedScroll >= 900 && lerpedScroll < 2500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px]",
+          lerpedScroll >= 900 && lerpedScroll < 3500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
-          <div className="w-full max-w-5xl flex flex-col gap-2">
-            {projects.map((proj, i) => (
-              <motion.div 
-                key={i}
-                initial={{ x: -100, opacity: 0 }}
-                animate={lerpedScroll >= 900 ? { 
-                  x: 0, 
-                  opacity: 1,
-                  z: (lerpedScroll - 1500 - (i * 200)) * 0.1
-                } : {}}
-                className="group flex flex-col items-center justify-center border-y border-white/10 py-10 hover:bg-white/5 transition-all text-center relative overflow-hidden"
-              >
-                 <div className="absolute top-4 left-6 minimal-body text-[10px] opacity-40">{proj.date}</div>
-                 <h3 className="titan-title text-5xl md:text-7xl group-hover:text-molten transition-all group-hover:scale-105 duration-500">
-                   {proj.title}
-                 </h3>
-                 <p className="minimal-body mt-4 text-xs group-hover:translate-y-0 translate-y-2 opacity-0 group-hover:opacity-100 transition-all">
-                   {proj.desc}
-                 </p>
-              </motion.div>
-            ))}
-          </div>
           <div className="absolute top-12 left-12">
              <div className="flex items-center gap-4">
-                <Database className="text-molten w-5 h-5" strokeWidth={1} />
-                <span className="minimal-body font-bold">DATA_ARCHIVE_ACTIVE</span>
+                <Database className="text-molten-red w-5 h-5" strokeWidth={1} />
+                <span className="minimal-body font-bold text-stark">DATA_ARCHIVE_ACTIVE</span>
              </div>
           </div>
+          
+          <motion.div 
+            className="relative w-full max-w-5xl h-[400px] flex items-center justify-center preserve-3d"
+            animate={{
+               rotateX: lerpedScroll >= 900 ? (lerpedScroll - 900) * -0.2 : 0
+            }}
+          >
+            {projects.map((proj, i) => {
+              const angle = i * (360 / projects.length);
+              return (
+                <div 
+                  key={i}
+                  className="absolute w-full flex flex-col items-center justify-center border-y border-white/10 py-12 backface-hidden bg-obsidian/90 backdrop-blur-sm"
+                  style={{
+                    transform: `rotateX(${angle}deg) translateZ(400px)`
+                  }}
+                >
+                   <div className="absolute top-4 left-6 minimal-body text-[10px] opacity-40">{proj.date}</div>
+                   <h3 className="titan-title text-4xl md:text-7xl hover:text-molten-red transition-all duration-500">
+                     {proj.title}
+                   </h3>
+                   <p className="minimal-body mt-6 text-xs max-w-2xl text-center opacity-80 leading-relaxed font-mono">
+                     {proj.desc}
+                   </p>
+                   {proj.github && (
+                     <a href={proj.github} target="_blank" rel="noopener noreferrer" className="mt-8 minimal-body text-[10px] border border-white/30 px-6 py-3 hover:bg-molten-red hover:border-molten-red transition-colors inline-block pointer-events-auto">
+                       VIEW_OPEN_SOURCE
+                     </a>
+                   )}
+                </div>
+              );
+            })}
+          </motion.div>
         </section>
 
         {/* SHOT 03: THE ENGINE (SKILLS & EXPERIENCE) */}
         <section className={cn(
           "absolute inset-0 flex items-center justify-center transition-opacity duration-1000 px-24",
-          lerpedScroll >= 2500 && lerpedScroll < 4500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          lerpedScroll >= 3500 && lerpedScroll < 5500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
           <div className="flex flex-col gap-12 w-full max-w-7xl">
             <div className="grid grid-cols-1 gap-8">
@@ -320,10 +343,59 @@ export default function App() {
           </div>
         </section>
 
-        {/* SHOT 04: THE INVERSION (CONTACT) */}
+        {/* SHOT 04: THE FOUNDATION (EDUCATION & ACHIEVEMENTS) */}
+        <section className={cn(
+          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12",
+          lerpedScroll >= 5500 && lerpedScroll < 7000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}>
+           <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-24">
+              {/* Education */}
+              <div className="flex flex-col gap-12">
+                 <h2 className="minimal-body text-molten-red tracking-[0.5rem] mb-6">01 // ACADEMIC_CORE</h2>
+                 {education.map((edu, col) => (
+                    <motion.div 
+                      key={col}
+                      animate={{ y: (lerpedScroll - 5800) * -0.05 }}
+                      className="border-l-2 border-white/20 pl-8 relative group hover:border-molten-red transition-colors"
+                    >
+                       <div className="absolute top-0 left-[-5px] w-2 h-2 bg-white group-hover:bg-molten-red transition-colors rounded-full" />
+                       <h3 className="titan-title text-4xl mb-4 leading-none">{edu.institute}</h3>
+                       <p className="minimal-body text-[14px] font-bold">{edu.degree}</p>
+                       <div className="flex gap-4 mt-2">
+                         <span className="minimal-body text-[10px] opacity-60">{edu.period}</span>
+                         <span className="minimal-body text-[10px] text-molten-red">{edu.location}</span>
+                       </div>
+                    </motion.div>
+                 ))}
+              </div>
+
+              {/* Achievements */}
+              <div className="flex flex-col gap-12">
+                 <h2 className="minimal-body text-molten-red tracking-[0.5rem] mb-6 border-b border-white/10 pb-4 text-right">02 // KEY_REPORTS</h2>
+                 <div className="flex flex-col gap-8">
+                   {achievements.map((ach, i) => (
+                     <motion.div 
+                       key={i}
+                       animate={{ x: (lerpedScroll - 5800) * 0.05 }}
+                       className="flex items-center gap-6 group bg-white/5 p-6 hover:bg-white/10 transition-colors"
+                     >
+                        <span className="titan-title text-3xl text-molten-red opacity-50 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          {ach.title}
+                        </span>
+                        <p className="minimal-body text-[11px] font-mono leading-relaxed">
+                          {ach.desc}
+                        </p>
+                     </motion.div>
+                   ))}
+                 </div>
+              </div>
+           </div>
+        </section>
+
+        {/* SHOT 05: THE INVERSION (CONTACT) */}
         <section className={cn(
           "absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000",
-          lerpedScroll >= 4500 ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          lerpedScroll >= 7000 ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
           <div className="text-obsidian text-center px-6 md:px-12 w-full max-w-5xl">
             <h2 className="titan-title text-[10vw] md:text-[8vw] tracking-[-0.2rem] md:tracking-[-0.5rem] italic text-shadow-none leading-[0.8]">ESTABLISH<br/>CONTACT</h2>
@@ -369,12 +441,12 @@ export default function App() {
 
       {/* Progress */}
       <div className="fixed right-12 top-1/2 -translate-y-1/2 flex flex-col gap-8 z-50 mix-blend-difference">
-         {[0, 1, 2, 3].map((i) => (
+         {[0, 1, 2, 3, 4].map((i) => (
            <div 
             key={i} 
             className={cn(
               "w-0.5 h-12 transition-all duration-500",
-              Math.floor(lerpedScroll / 1600) === i ? "bg-molten h-24" : "bg-white/20"
+              Math.floor(lerpedScroll / 1800) === i ? "bg-molten-red h-24" : "bg-white/20"
             )}
            />
          ))}
