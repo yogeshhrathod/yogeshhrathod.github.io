@@ -2,8 +2,8 @@
 
 @theme {
   --color-obsidian: #020202;
-  --color-molten-red: #ff3300;
-  --color-stark-white: #ffffff;
+  --color-molten: #ff3300;
+  --color-stark: #ffffff;
   
   --font-titan: "Inter", system-ui, sans-serif;
 }
@@ -69,15 +69,36 @@
   }
 
   .minimal-body {
-    font-size: 10px;
-    letter-spacing: 0.5rem;
+    font-size: 13px;
+    letter-spacing: 0.3rem;
     text-transform: uppercase;
-    font-weight: 400;
-    opacity: 0.6;
+    font-weight: 500;
+    opacity: 0.9;
   }
 
   .text-shadow-molten {
     text-shadow: 0 0 20px rgba(255, 51, 0, 0.5);
+  }
+
+  .metallic-chrome {
+    background: linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #a0a0a0 25%,
+      #ffffff 50%,
+      #a0a0a0 75%,
+      #ffffff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 10s linear infinite;
+  }
+
+  @keyframes shine {
+    to {
+      background-position: 200% center;
+    }
   }
 
   .god-ray {
