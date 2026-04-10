@@ -1,20 +1,34 @@
 import { useState, useEffect } from 'react';
+import gsap from 'gsap';
 
+/**
+ * useHandheldDrift
+ * Simulates the "Unstable Witness" rule (Rule X) using GSAP.
+ * Creates a weighted, organic drift that feels like a physical camera.
+ */
 export const useHandheldDrift = () => {
   const [drift, setDrift] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    let time = 0;
-    const animate = () => {
-      time += 0.02;
-      setDrift({
-        x: Math.sin(time * 0.7) * 5,
-        y: Math.cos(time * 0.5) * 5,
+    const ctx = gsap.context(() => {
+      // Create a smooth, organic float
+      gsap.to({}, {
+        duration: 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        onUpdate: function() {
+          // Add a tiny bit of random noise on top of the sine wave
+          const time = Date.now() * 0.001;
+          setDrift({
+            x: Math.sin(time * 0.7) * 12 + (Math.random() - 0.5) * 2,
+            y: Math.cos(time * 0.5) * 8 + (Math.random() - 0.5) * 2,
+          });
+        }
       });
-      requestAnimationFrame(animate);
-    };
-    const id = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(id);
+    });
+
+    return () => ctx.revert();
   }, []);
 
   return drift;
