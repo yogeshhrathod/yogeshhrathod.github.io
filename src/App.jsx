@@ -262,12 +262,12 @@ export default function App() {
            />
         </section>
 
-        {/* SHOT 02: THE ARCHIVE (PROJECTS) - REVOLVER ROLLING */}
+        {/* SHOT 02: THE ARCHIVE (PROJECTS) - CINEMATIC CREDITS */}
         <section className={cn(
-          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px]",
+          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px] overflow-hidden",
           lerpedScroll >= 900 && lerpedScroll < 3500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
-          <div className="absolute top-12 left-12">
+          <div className="absolute top-12 left-12 z-50">
              <div className="flex items-center gap-4">
                 <Database className="text-molten-red w-5 h-5" strokeWidth={1} />
                 <span className="minimal-body font-bold text-stark">DATA_ARCHIVE_ACTIVE</span>
@@ -275,37 +275,59 @@ export default function App() {
           </div>
           
           <motion.div 
-            className="relative w-full max-w-5xl h-[400px] flex items-center justify-center preserve-3d"
+            className="w-full max-w-5xl flex flex-col items-center gap-48 preserve-3d"
             animate={{
-               rotateX: lerpedScroll >= 900 ? (lerpedScroll - 900) * -0.2 : 0
+               y: 1000 - Math.max(0, lerpedScroll - 900) * 1.5,
+               translateZ: Math.max(0, lerpedScroll - 900) * 0.1
             }}
           >
             {projects.map((proj, i) => {
-              const angle = i * (360 / projects.length);
-              return (
-                <div 
-                  key={i}
-                  className="absolute w-full flex flex-col items-center justify-center border-y border-white/10 py-12 backface-hidden bg-obsidian/90 backdrop-blur-sm"
-                  style={{
-                    transform: `rotateX(${angle}deg) translateZ(400px)`
-                  }}
-                >
-                   <div className="absolute top-4 left-6 minimal-body text-[10px] opacity-40">{proj.date}</div>
-                   <h3 className="titan-title text-4xl md:text-7xl hover:text-molten-red transition-all duration-500">
+              const ProjectContent = (
+                <div className="flex flex-col items-center text-center">
+                   <div className="minimal-body text-[12px] opacity-50 mb-6 tracking-[0.5rem]">{proj.date}</div>
+                   <h3 className={cn(
+                     "titan-title text-6xl md:text-8xl transition-all duration-500",
+                     proj.github ? "group-hover:text-molten-red group-hover:scale-105" : ""
+                   )}>
                      {proj.title}
                    </h3>
-                   <p className="minimal-body mt-6 text-xs max-w-2xl text-center opacity-80 leading-relaxed font-mono">
+                   <p className="minimal-body mt-8 text-sm max-w-3xl opacity-80 leading-relaxed font-mono">
                      {proj.desc}
                    </p>
                    {proj.github && (
-                     <a href={proj.github} target="_blank" rel="noopener noreferrer" className="mt-8 minimal-body text-[10px] border border-white/30 px-6 py-3 hover:bg-molten-red hover:border-molten-red transition-colors inline-block pointer-events-auto">
-                       VIEW_OPEN_SOURCE
-                     </a>
+                     <div className="mt-12 minimal-body text-[10px] border border-white/30 px-6 py-3 group-hover:bg-molten-red group-hover:border-molten-red transition-all duration-300 inline-block group-hover:text-white font-bold">
+                       ACCESS_SECURE_LINK
+                     </div>
                    )}
+                   <div className="w-full h-[1px] bg-white/20 mt-24 blur-[1px]"></div>
+                </div>
+              );
+
+              if (proj.github) {
+                return (
+                  <a 
+                    key={i}
+                    href={proj.github} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="w-full cursor-pointer pointer-events-auto group outline-none"
+                  >
+                    {ProjectContent}
+                  </a>
+                );
+              }
+
+              return (
+                <div key={i} className="w-full">
+                  {ProjectContent}
                 </div>
               );
             })}
           </motion.div>
+
+          {/* Cinematic Vignette Slabs */}
+          <div className="absolute top-0 w-full h-48 bg-gradient-to-b from-obsidian to-transparent pointer-events-none z-10" />
+          <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-obsidian to-transparent pointer-events-none z-10" />
         </section>
 
         {/* SHOT 03: THE ENGINE (SKILLS & EXPERIENCE) */}
