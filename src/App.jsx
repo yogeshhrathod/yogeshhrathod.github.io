@@ -16,8 +16,8 @@ function cn(...inputs) {
 // --- UTILS ---
 const lerp = (start, end, factor) => start + (end - start) * factor;
 
-// --- CANVAS ASH COMPONENT ---
-const AshAtmospheric = () => {
+// --- SUBMERGED PARTICLES (Ubisoft Rule: < 0.1px per frame) ---
+const SubmergedParticles = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -29,28 +29,25 @@ const AshAtmospheric = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const particles = Array.from({ length: 150 }, () => ({
+    const particles = Array.from({ length: 120 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       size: Math.random() * 2 + 0.5,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: Math.random() * 1 + 0.2,
-      opacity: Math.random() * 0.5 + 0.1,
-      death: Math.random() * 0.5 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.08,
+      speedY: (Math.random() - 0.5) * 0.08,
+      opacity: Math.random() * 0.4 + 0.1,
     }));
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
       particles.forEach((p) => {
         p.x += p.speedX;
-        p.y -= p.speedY; // Ash rising/drifting
+        p.y += p.speedY;
 
-        if (p.y < 0) {
-          p.y = height;
-          p.x = Math.random() * width;
-        }
-        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
         if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
 
         ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
         ctx.beginPath();
@@ -77,22 +74,95 @@ const AshAtmospheric = () => {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 pointer-events-none z-10 opacity-40 mix-blend-screen"
+      className="fixed inset-0 pointer-events-none z-10 opacity-30 mix-blend-screen"
     />
   );
 };
+
+const dialogues = [
+  { trigger: [1000, 2000], text: ["CHECK OUT MY PROJECTS."] },
+  { trigger: [4000, 5000], text: ["AHHHHH... THAT'S LUNA.", "AND HERE IS MY WORK EXPERIENCE."] },
+  { trigger: [7000, 8000], text: ["AND THIS IS MY EDUCATION."] },
+];
+
+const TypewriterText = ({ text, active }) => {
+  const words = text.split(" ");
+  
+  return (
+    <div className="flex flex-wrap justify-center overflow-visible">
+      {words.map((word, wi) => (
+        <div key={wi} className="flex whitespace-nowrap mr-[1.5rem] last:mr-0">
+          {Array.from(word).map((char, ci) => (
+            <motion.span
+              key={ci}
+              initial={{ opacity: 0, y: 10, filter: 'blur(10px)' }}
+              animate={active 
+                ? { opacity: 0.6, y: 0, filter: 'blur(0px)' } 
+                : { opacity: 0, y: -10, filter: 'blur(10px)' }
+              }
+              transition={{
+                duration: 0.8,
+                delay: active ? (wi * 5 + ci) * 0.05 : 0,
+                ease: [0.22, 1, 0.36, 1]
+              }}
+              className="titan-title text-[3vw] text-stark tracking-[1rem]"
+            >
+              {char}
+            </motion.span>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
+const NarrativeInterlude = ({ scroll }) => {
+  return (
+    <div className="fixed inset-0 z-[80] pointer-events-none">
+      {dialogues.map((d, i) => {
+        const isActive = scroll >= d.trigger[0] && scroll <= d.trigger[1];
+        return (
+          <div
+            key={i}
+            className={cn(
+               "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
+               isActive ? "opacity-100" : "opacity-0"
+            )}
+          >
+            <div className="w-full max-w-4xl px-12">
+              {d.text.map((line, li) => (
+                <TypewriterText key={li} text={line} active={isActive} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+
+
 
 // --- MAIN APP ---
 export default function App() {
   const containerRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [scrollPos, setScrollPos] = useState(0);
-  const [lerpedScroll, setLerpedScroll] = useState(0);
+  
+  // Create a MotionValue for scroll to use with hooks
+  const lerpedScrollVal = useScroll().scrollY;
+  const lerpedScroll = useSpring(lerpedScrollVal, { stiffness: 50, damping: 20 });
+  
+  // Keep regular state for logic or non-motion components if needed, 
+  // but we'll use a derived state for simpler triggers in NarrativeInterlude
+  const [currentScroll, setCurrentScroll] = useState(0);
 
   // Resume Data
   const projects = [
     { title: "REMEMBERIT", desc: "The Tag-Based File Explorer (Electron/SQLite). Intuitive drag and drop file organization, filtering, and reference management without relocating files.", date: "2024" },
-    { title: "ANAYAS", desc: "Advanced REST Client / Postman Alternative. API-dependent calls for better data fetching. Open source.", date: "10/2023 - PRESENT", github: "https://github.com/yogeshhrathod/Anayas" },
+    { title: "LUNA_", desc: "Next-Gen Intelligent Interface. Advanced data orchestration and seamless user experiences. Built for the modern web.", date: "2024 - PRESENT", github: "https://luna.wesparkvault.com/" },
     { title: "AIS", desc: "Global Ship Tracking System (Gov Project). Analyzed past activities and identified suspicious maritime behavior in real-time.", date: "01/2021 - 12/2021" },
     { title: "SIMPLIFIED CREDIT", desc: "Financial Loan Aggregator. Automated generation of detailed Financial Models and Reports for bank viability assessments.", date: "01/2020 - 12/2020" },
   ];
@@ -131,29 +201,11 @@ export default function App() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Smooth Scroll Lerp Logic
+  // Update current scroll state for non-motion logic
   useEffect(() => {
-    let currentScroll = window.scrollY;
-    let targetScroll = window.scrollY;
-
-    const handleScroll = () => {
-      targetScroll = window.scrollY;
-    };
-
-    const update = () => {
-      currentScroll = lerp(currentScroll, targetScroll, 0.07);
-      setLerpedScroll(currentScroll);
-      setScrollPos(targetScroll);
-      requestAnimationFrame(update);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    const id = requestAnimationFrame(update);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(id);
-    };
-  }, []);
+    const unsub = lerpedScroll.on("change", (v) => setCurrentScroll(v));
+    return () => unsub();
+  }, [lerpedScroll]);
 
   // Handheld Drift
   const [drift, setDrift] = useState({ x: 0, y: 0 });
@@ -172,22 +224,28 @@ export default function App() {
   }, []);
 
   const cameraTransform = useMemo(() => {
-    const isContactPage = lerpedScroll >= 7000;
+    const isContactPage = currentScroll >= 8400;
     const tiltX = isContactPage ? 0 : (mousePos.y * 5 + drift.y * 0.2);
     const tiltY = isContactPage ? 0 : (-mousePos.x * 5 + drift.x * 0.2);
     
     return {
       transform: `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(0px)`,
     };
-  }, [mousePos, drift, lerpedScroll]);
+  }, [mousePos, drift, currentScroll]);
+
+  // Derived transforms for Monolith
+  const monolithScale = useTransform(lerpedScroll, [0, 900], [1, 5]);
+  const monolithOpacity = useTransform(lerpedScroll, [800, 1000], [1, 0]);
+  const statusOpacity = useTransform(lerpedScroll, [0, 500], [1, 0]);
 
   return (
     <div 
-      className="relative min-h-[900vh] bg-obsidian transition-colors duration-700"
+      className="relative min-h-[1200vh] bg-obsidian transition-colors duration-700"
       ref={containerRef}
     >
       <div className="vignette" />
-      <AshAtmospheric />
+      <SubmergedParticles />
+      <NarrativeInterlude scroll={currentScroll} />
 
       {/* FIXED CAMERA VIEWPORT */}
       <div 
@@ -197,13 +255,19 @@ export default function App() {
         {/* SHOT 01: THE MONOLITH */}
         <section className={cn(
           "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
-          lerpedScroll < 900 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          currentScroll < 1000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
            <motion.div 
-            initial={{ scale: 1, opacity: 0 }}
-            animate={{ scale: 1 + (lerpedScroll / 400) * 6, opacity: 1 }}
+            style={{ scale: monolithScale, opacity: monolithOpacity }}
             className="flex flex-col items-center"
            >
+               <motion.div 
+                 style={{ opacity: statusOpacity }}
+                 className="absolute top-12 left-12"
+               >
+                 <span className="minimal-body text-[10px] text-molten-red font-bold tracking-[0.5rem]">STATUS // OPERATIONAL</span>
+               </motion.div>
+
                <div 
                  className="relative group cursor-default pointer-events-auto z-20"
                  onMouseMove={(e) => {
@@ -260,30 +324,54 @@ export default function App() {
             transition={{ duration: 5, ease: "easeOut", delay: 0.5 }}
             className="god-ray right-1/4 top-[-10%]" 
            />
+
+           {/* PROTAGONIST EXPRESSION: AHHHHH (SONIC REVEAL) */}
+           <motion.div 
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-[150]"
+            style={{
+              opacity: useTransform(lerpedScroll, [4000, 4300, 4700, 5000], [0, 0.15, 0.15, 0]),
+              scale: useTransform(lerpedScroll, [4000, 5000], [0.9, 1.2]),
+            }}
+           >
+              <h2 className="titan-title text-[25vw] italic text-molten-red tracking-[10rem] mix-blend-overlay filter blur-[2px] animate-pulse">
+                AHHHHH
+              </h2>
+              {/* Sonic Ripple */}
+              <motion.div 
+                animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeOut" }}
+                className="absolute w-[50vw] h-[50vw] border border-molten-red/30 rounded-full"
+              />
+           </motion.div>
         </section>
 
         {/* SHOT 02: THE ARCHIVE (PROJECTS) - CINEMATIC CREDITS */}
         <section className={cn(
           "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px] overflow-hidden",
-          lerpedScroll >= 900 && lerpedScroll < 3500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          currentScroll >= 2000 && currentScroll < 4000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
+          {/* MASSIVE SECTION HEADER */}
+          <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
+            <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute">PROJECTS</h2>
+          </div>
+
           <div className="absolute top-12 left-12 z-50">
              <div className="flex items-center gap-4">
                 <Database className="text-molten-red w-5 h-5" strokeWidth={1} />
-                <span className="minimal-body font-bold text-stark">DATA_ARCHIVE_ACTIVE</span>
+                <span className="minimal-body font-bold text-stark">THE_ARCHIVE // SELECTED_WORKS</span>
              </div>
           </div>
           
           <motion.div 
             className="w-full max-w-5xl flex flex-col items-center gap-48 preserve-3d"
-            animate={{
-               y: 1000 - Math.max(0, lerpedScroll - 900) * 1.5,
-               translateZ: Math.max(0, lerpedScroll - 900) * 0.1
+            style={{
+               y: useTransform(lerpedScroll, [2000, 4000], [1000, -2000]),
+               translateZ: useTransform(lerpedScroll, [2000, 4000], [0, 200])
             }}
           >
             {projects.map((proj, i) => {
               const ProjectContent = (
-                <div className="flex flex-col items-center text-center">
+                <div key={i} className="flex flex-col items-center text-center">
                    <div className="minimal-body text-[12px] opacity-50 mb-6 tracking-[0.5rem]">{proj.date}</div>
                    <h3 className={cn(
                      "titan-title text-6xl md:text-8xl transition-all duration-500",
@@ -317,11 +405,7 @@ export default function App() {
                 );
               }
 
-              return (
-                <div key={i} className="w-full">
-                  {ProjectContent}
-                </div>
-              );
+              return ProjectContent;
             })}
           </motion.div>
 
@@ -333,14 +417,19 @@ export default function App() {
         {/* SHOT 03: THE ENGINE (SKILLS & EXPERIENCE) */}
         <section className={cn(
           "absolute inset-0 flex items-center justify-center transition-opacity duration-1000 px-24",
-          lerpedScroll >= 3500 && lerpedScroll < 5500 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          currentScroll >= 5000 && currentScroll < 7000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
-          <div className="flex flex-col gap-12 w-full max-w-7xl">
+          {/* MASSIVE SECTION HEADER */}
+          <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
+            <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute">EXPERIENCE</h2>
+          </div>
+
+          <div className="flex flex-col gap-12 w-full max-w-7xl relative z-10">
             <div className="grid grid-cols-1 gap-8">
               {experience.map((exp, i) => (
                 <motion.div 
                   key={i}
-                  animate={{ x: (lerpedScroll - 3500) * 0.05 * (i % 2 === 0 ? 1 : -1) }}
+                  style={{ x: useTransform(lerpedScroll, [5000, 7000], [i % 2 === 0 ? 100 : -100, i % 2 === 0 ? -100 : 100]) }}
                   className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/20 pb-8 group"
                 >
                   <div className="flex flex-col">
@@ -368,17 +457,20 @@ export default function App() {
         {/* SHOT 04: THE FOUNDATION (EDUCATION & ACHIEVEMENTS) */}
         <section className={cn(
           "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[3000px] overflow-hidden",
-          lerpedScroll >= 5500 && lerpedScroll < 7000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          currentScroll >= 8000 && currentScroll < 10000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
+           {/* MASSIVE SECTION HEADER */}
+           <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
+             <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute">FOUNDATION</h2>
+           </div>
+
            {/* Background Grid Pattern for "Scanner" feel */}
            <motion.div 
              className="absolute inset-0 z-0 opacity-10 pointer-events-none"
              style={{
                backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
-               backgroundSize: '40px 40px'
-             }}
-             animate={{
-               translateZ: (lerpedScroll - 5500) * 0.2
+               backgroundSize: '40px 40px',
+               translateZ: useTransform(lerpedScroll, [8000, 10000], [0, 400])
              }}
            />
 
@@ -387,14 +479,14 @@ export default function App() {
               {/* Education Slab */}
               <motion.div 
                 className="w-full flex flex-col md:flex-row gap-12 items-start"
-                animate={{
-                   x: (lerpedScroll - 5800) * -0.2, // Slides left as you scroll down
-                   translateZ: (lerpedScroll - 5800) * 0.1
+                style={{
+                   x: useTransform(lerpedScroll, [8000, 9500], [200, -200]),
+                   translateZ: useTransform(lerpedScroll, [8000, 9500], [0, 100])
                 }}
               >
                  <div className="bg-white/5 border border-white/10 p-12 w-full md:w-2/3 backdrop-blur-sm relative group hover:border-molten-red transition-all duration-700 hover:shadow-[0_0_100px_rgba(255,0,0,0.1)]">
                     <div className="absolute top-0 left-0 w-2 h-full bg-molten-red group-hover:w-4 transition-all duration-500" />
-                    <h2 className="minimal-body text-[10px] text-molten-red tracking-[0.5rem] mb-12">01 // CLASSIFIED: ACADEMIC_CORE</h2>
+                    <h2 className="minimal-body text-[10px] text-molten-red tracking-[0.5rem] mb-12">ACADEMIC_CORE</h2>
                     {education.map((edu, col) => (
                       <div key={col} className="flex flex-col gap-4">
                         <h3 className="titan-title text-5xl md:text-7xl leading-[0.9] uppercase mix-blend-difference">{edu.institute}</h3>
@@ -411,14 +503,14 @@ export default function App() {
               {/* Achievements Grid */}
               <motion.div 
                 className="w-full flex flex-col items-end"
-                animate={{
-                   x: (lerpedScroll - 5800) * 0.2, // Slides right as you scroll down
-                   translateZ: (lerpedScroll - 5800) * 0.15
+                style={{
+                   x: useTransform(lerpedScroll, [8600, 10000], [-300, 300]),
+                   translateZ: useTransform(lerpedScroll, [8600, 10000], [0, 150])
                 }}
               >
                  <div className="w-full md:w-3/4">
                     <h2 className="minimal-body text-[10px] text-molten-red tracking-[0.5rem] mb-6 text-right w-full border-b border-white/10 pb-4">
-                      02 // EXTERNAL_REPORTS
+                      EXTERNAL_REPORTS
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
                       {achievements.map((ach, i) => (
@@ -449,8 +541,12 @@ export default function App() {
         {/* SHOT 05: THE INVERSION (CONTACT) */}
         <section className={cn(
           "absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000",
-          lerpedScroll >= 7000 ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          currentScroll >= 11000 ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}>
+          {/* MASSIVE SECTION HEADER */}
+          <div className="absolute top-[10%] left-0 w-full overflow-hidden pointer-events-none opacity-5">
+            <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute text-obsidian">THE_END</h2>
+          </div>
           <div className="text-obsidian text-center px-6 md:px-12 w-full max-w-5xl">
             <h2 className="titan-title text-[10vw] md:text-[8vw] tracking-[-0.2rem] md:tracking-[-0.5rem] italic text-shadow-none leading-[0.8]">ESTABLISH<br/>CONTACT</h2>
             
@@ -495,14 +591,24 @@ export default function App() {
 
       {/* Progress */}
       <div className="fixed right-12 top-1/2 -translate-y-1/2 flex flex-col gap-8 z-50 mix-blend-difference">
-         {[0, 1, 2, 3, 4].map((i) => (
+         {[
+           { label: 'START', range: [0, 1000] },
+           { label: 'PROJECTS', range: [2000, 4000] },
+           { label: 'EXPERIENCE', range: [5000, 7000] },
+           { label: 'FOUNDATION', range: [8000, 10000] },
+           { label: 'CONTACT', range: [11000, 12000] }
+         ].map((shot, i) => (
            <div 
             key={i} 
             className={cn(
-              "w-0.5 h-12 transition-all duration-500",
-              Math.floor(lerpedScroll / 1800) === i ? "bg-molten-red h-24" : "bg-white/20"
+              "w-0.5 h-12 transition-all duration-500 relative group",
+              currentScroll >= shot.range[0] && currentScroll <= shot.range[1] ? "bg-molten-red h-24" : "bg-white/20"
             )}
-           />
+           >
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 minimal-body text-[8px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                {shot.label}
+              </span>
+           </div>
          ))}
       </div>
 
@@ -511,7 +617,7 @@ export default function App() {
         transition={{ repeat: Infinity, duration: 2 }}
         className={cn(
           "fixed bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 transition-opacity",
-          lerpedScroll > 100 ? "opacity-0" : "opacity-100"
+          currentScroll > 100 ? "opacity-0" : "opacity-100"
         )}
       >
         <span className="minimal-body">INITIATE_DESCENT</span>
@@ -520,3 +626,4 @@ export default function App() {
     </div>
   );
 }
+
