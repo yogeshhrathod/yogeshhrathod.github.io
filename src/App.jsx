@@ -2,36 +2,60 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { ReactLenis, useLenis } from 'lenis/react';
-
-// Utils & Helpers
 import { cn } from './utils';
-
-// Components
 import { SubmergedParticles } from './components/SubmergedParticles';
 import { NarrativeInterlude } from './components/NarrativeInterlude';
 import { FastReadOverlay } from './components/FastReadOverlay';
-
-// Scenes (Shots)
+import { SoundControl } from './components/SoundControl';
+import { useSound } from './context/SoundContext';
+import { useHaptics } from './context/HapticContext';
 import { TheMonolith } from './scenes/TheMonolith';
 import { TheArchive } from './scenes/TheArchive';
 import { TheEngine } from './scenes/TheEngine';
 import { TheFoundation } from './scenes/TheFoundation';
 import { TheInversion } from './scenes/TheInversion';
-
-// Hooks
-import { useMousePos } from './hooks/useMousePos';
 import { useHandheldDrift } from './hooks/useHandheldDrift';
 import { useCameraTransform } from './hooks/useCameraTransform';
 
-
-
 export default function App() {
   const containerRef = useRef(null);
-  const mousePos = useMousePos();
   const drift = useHandheldDrift();
+  const { play } = useSound();
+  const { trigger } = useHaptics();
   const [isFastReadOpen, setIsFastReadOpen] = useState(false);
   
+  // High-performance Mouse Tracking (Avoiding re-renders)
+  const xPercent = useSpring(0, { stiffness: 50, damping: 30 });
+  const yPercent = useSpring(0, { stiffness: 50, damping: 30 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      xPercent.set(x);
+      yPercent.set(y);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [xPercent, yPercent]);
+
   // Dynamic Viewport Height for range calculation
+  // Haptic Visual Feedback Engine
+  const [hapticIntensity, setHapticIntensity] = useState(0);
+  useEffect(() => {
+    const triggerHaptic = (e) => {
+      const { intensity, pattern } = e.detail;
+      
+      // Calculate duration based on pattern sum
+      const duration = pattern.reduce((a, b) => a + b, 0);
+      
+      setHapticIntensity(intensity);
+      setTimeout(() => setHapticIntensity(0), duration || 50);
+    };
+    window.addEventListener('ui-haptic-impact', triggerHaptic);
+    return () => window.removeEventListener('ui-haptic-impact', triggerHaptic);
+  }, []);
+
   const [vH, setVH] = useState(window.innerHeight);
   useEffect(() => {
     const handleResize = () => setVH(window.innerHeight);
@@ -76,7 +100,23 @@ export default function App() {
     CONTACT: [vH * 23.5, vH * 25.0],
   };
 
-  const cameraTransform = useCameraTransform(mousePos, drift, currentScroll);
+  const cameraTransform = useCameraTransform(xPercent, yPercent, drift, scrollY);
+
+  // Trigger sounds on major scroll milestones
+  const lastSection = useRef(null);
+  useEffect(() => {
+    let activeSection = null;
+    Object.entries(RANGES).forEach(([key, [start, end]]) => {
+      if (currentScroll >= start && currentScroll < end) {
+        activeSection = key;
+      }
+    });
+
+    if (activeSection && activeSection !== lastSection.current) {
+      play('HEAVY_THUD', { volume: 0.05 });
+      lastSection.current = activeSection;
+    }
+  }, [currentScroll, play, RANGES]);
 
   return (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
@@ -91,12 +131,17 @@ export default function App() {
         <FastReadOverlay isOpen={isFastReadOpen} onClose={() => setIsFastReadOpen(false)} />
 
         {/* FIXED CAMERA VIEWPORT */}
-        <div 
+        <motion.div 
           className={cn(
             "fixed inset-0 flex flex-col items-center justify-center overflow-hidden transition-all duration-1000",
             isFastReadOpen ? "blur-md scale-95 opacity-50" : "blur-0 scale-100 opacity-100"
           )}
-          style={cameraTransform}
+          animate={{
+            x: hapticIntensity > 0 ? [0, -hapticIntensity, hapticIntensity, 0] : 0,
+            y: hapticIntensity > 0 ? [0, -hapticIntensity, hapticIntensity, 0] : 0,
+          }}
+          transition={{ duration: 0.05, repeat: hapticIntensity > 1 ? 2 : 0 }}
+          style={{ transform: cameraTransform }}
         >
           <TheMonolith 
             currentScroll={currentScroll} 
@@ -108,7 +153,9 @@ export default function App() {
           <TheEngine currentScroll={currentScroll} lerpedScroll={lerpedScroll} range={RANGES.EXPERIENCE} />
           <TheFoundation currentScroll={currentScroll} lerpedScroll={lerpedScroll} range={RANGES.FOUNDATION} />
           <TheInversion currentScroll={currentScroll} threshold={RANGES.CONTACT[0]} />
-        </div>
+        </motion.div>
+
+        <SoundControl />
 
         {/* Progress HUD */}
         <div className={cn(
@@ -128,7 +175,11 @@ export default function App() {
                <div 
                 key={i} 
                 className="flex items-center justify-end gap-4 group cursor-pointer"
-                onClick={() => lenis?.scrollTo(start)}
+                onClick={() => {
+                  play('CLICK_MECHANICAL', { volume: 0.1 });
+                  trigger('selection');
+                  lenis?.scrollTo(start);
+                }}
                >
                  <span className={cn(
                    "minimal-body text-[10px] tracking-[0.3rem] transition-all",
@@ -145,18 +196,6 @@ export default function App() {
            })}
         </div>
 
-        {/* Initial Prompt */}
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className={cn(
-            "fixed bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 transition-opacity",
-            (currentScroll > 100 || isFastReadOpen) ? "opacity-0" : "opacity-100"
-          )}
-        >
-          <span className="minimal-body">INITIATE_DESCENT</span>
-          <ChevronDown className="text-stark w-4 h-4" strokeWidth={1} />
-        </motion.div>
       </div>
 
     </ReactLenis>

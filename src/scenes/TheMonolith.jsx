@@ -1,13 +1,34 @@
 import React from 'react';
-import { motion, useTransform } from 'framer-motion';
+import { motion, useTransform, useSpring } from 'framer-motion';
 import { cn } from '../utils';
+import { useSound } from '../context/SoundContext';
+import { useHaptics } from '../context/HapticContext';
 
 export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], onOpenFastRead }) => {
   const [start, end] = range;
+  const { play } = useSound();
+  const { trigger } = useHaptics();
   const monolithScale = useTransform(lerpedScroll, [start, end], [1, 5]);
   const monolithOpacity = useTransform(lerpedScroll, [start + (end - start) * 0.8, end], [1, 0]);
   const statusOpacity = useTransform(lerpedScroll, [start, start + (end - start) * 0.5], [1, 0]);
   
+  const flashlightX = useSpring(0, { stiffness: 100, damping: 30 });
+  const flashlightY = useSpring(0, { stiffness: 100, damping: 30 });
+  const flashlightOpacity = useSpring(0, { stiffness: 100, damping: 30 });
+  const titleContainerRef = React.useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!titleContainerRef.current) return;
+    const rect = titleContainerRef.current.getBoundingClientRect();
+    flashlightX.set(e.clientX - rect.left);
+    flashlightY.set(e.clientY - rect.top);
+  };
+
+  const flashlightClipPath = useTransform(
+    [flashlightX, flashlightY],
+    ([x, y]) => `circle(150px at ${x}px ${y}px)`
+  );
+
   const sonicOpacity = useTransform(lerpedScroll, [4000, 4300, 4700, 5000], [0, 0.15, 0.15, 0]);
   const sonicScale = useTransform(lerpedScroll, [4000, 5000], [0.9, 1.2]);
 
@@ -16,12 +37,6 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
       "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
       currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
-       <motion.div 
-         style={{ opacity: statusOpacity }}
-         className="absolute top-12 left-12 z-[300]"
-       >
-         <span className="minimal-body text-[10px] text-molten-red font-bold tracking-[0.5rem]">STATUS // OPERATIONAL</span>
-       </motion.div>
 
        <motion.button 
          initial={{ opacity: 0, x: 20 }}
@@ -47,7 +62,15 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
          }}
          whileHover="hover"
          initial="initial"
-         onClick={onOpenFastRead}
+         onClick={() => {
+            play('SWOOSH_CINEMATIC', { volume: 0.4 });
+            trigger('heavy');
+            onOpenFastRead();
+         }}
+         onMouseEnter={() => {
+            play('HOVER_PHYSICAL', { volume: 0.1, pitch: 1.5 });
+            trigger('light');
+         }}
          className="fixed top-12 right-12 px-8 py-3 border border-white/10 bg-white/5 backdrop-blur-xl rounded-full minimal-body text-[10px] text-stark/80 hover:text-white transition-all pointer-events-auto z-[300] group flex items-center gap-4 cursor-pointer overflow-hidden"
        >
           {/* High Speed Lens Flare Sweep */}
@@ -81,14 +104,11 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
         className="flex flex-col items-center"
        >
            <div 
+             ref={titleContainerRef}
              className="relative group cursor-default pointer-events-auto z-20"
-             onMouseMove={(e) => {
-               const rect = e.currentTarget.getBoundingClientRect();
-               const x = e.clientX - rect.left;
-               const y = e.clientY - rect.top;
-               e.currentTarget.style.setProperty('--x', `${x}px`);
-               e.currentTarget.style.setProperty('--y', `${y}px`);
-             }}
+             onMouseMove={handleMouseMove}
+             onMouseEnter={() => flashlightOpacity.set(1)}
+             onMouseLeave={() => flashlightOpacity.set(0)}
            >
              <motion.h1 
               initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
@@ -104,10 +124,11 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 3.5 }}
-              className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none absolute inset-0 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+              className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none absolute inset-0 pointer-events-none transition-opacity duration-300"
               style={{
-                clipPath: 'circle(150px at var(--x, 50%) var(--y, 50%))',
-                WebkitClipPath: 'circle(150px at var(--x, 50%) var(--y, 50%))',
+                opacity: flashlightOpacity,
+                clipPath: flashlightClipPath,
+                WebkitClipPath: flashlightClipPath,
               }}
              >
                YOGESH<br/>RATHOD

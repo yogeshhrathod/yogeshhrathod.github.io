@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSound } from '../context/SoundContext';
 import { motion } from 'framer-motion';
 import { cn } from '../utils';
 import { dialogues } from '../data/resume';
@@ -6,65 +7,26 @@ import { dialogues } from '../data/resume';
 /**
  * TypewriterChar 
  */
-const TypewriterChar = ({ char, index, progress, totalChars, showCursor }) => {
-  const focalPoint = progress * totalChars;
-  // Use < instead of <= to prevent the first letter (index 0) from showing at progress 0
-  const isPast = index < focalPoint;
-  const isTarget = Math.floor(focalPoint) === index;
-  const isEndOfLine = index === totalChars - 1;
-
-  // Rule: Show cursor only if this character is the active typing point on an active line
-  // And hide it once the line is fully discovered
-  const activeCursor = showCursor && isTarget && progress < 1;
+const TypewriterLine = ({ line, progress, showCursor }) => {
+  const charsRevealed = Math.floor(progress * line.length);
+  const revealed = line.slice(0, charsRevealed);
+  const hidden = line.slice(charsRevealed);
 
   return (
-    <span className="relative inline-block">
-      <span
-        style={{ 
-          opacity: isPast ? 1 : 0,
-          display: 'inline-block',
-          whiteSpace: char === " " ? 'pre' : 'normal',
-          fontFamily: '"Courier Prime", monospace',
-          fontSize: '2.2vw',
-          lineHeight: '1.4',
-          letterSpacing: '0.05rem',
-          transition: 'none' 
-        }}
-        className="text-stark font-bold"
-      >
-        {char}
-      </span>
-      
-      {activeCursor && (
-        <motion.div
-          animate={{ opacity: [1, 0] }}
-          transition={{ 
-            repeat: Infinity, 
-            duration: 0.2,
-            ease: "steps(1)" 
+    <div className="text-center font-mono text-[2.2vw] leading-[1.6] tracking-[0.1rem] uppercase max-w-5xl mx-auto px-4 relative">
+      <span className="text-stark whitespace-pre-wrap">{revealed}</span>
+      {showCursor && (
+        <motion.span 
+          className="inline-block w-[1.5px] h-[1em] bg-white align-middle ml-1"
+          style={{ 
+            boxShadow: '0 0 10px #ff3300, 0 0 20px rgba(255, 51, 0, 0.5)',
+            transform: 'translateY(-10%)'
           }}
-          className="absolute left-full top-[10%] w-[1.2vw] h-[80%] bg-molten-red ml-1 shadow-[0_0_10px_rgba(255,0,0,0.5)]"
+          animate={{ opacity: [1, 0, 1] }}
+          transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
         />
       )}
-    </span>
-  );
-};
-
-const TypewriterLine = ({ line, progress, showCursor }) => {
-  const chars = line.split("");
-  
-  return (
-    <div className="flex flex-wrap justify-center items-center max-w-6xl">
-      {chars.map((char, i) => (
-        <TypewriterChar 
-          key={i} 
-          char={char} 
-          index={i} 
-          progress={progress} 
-          totalChars={chars.length} 
-          showCursor={showCursor}
-        />
-      ))}
+      <span className="opacity-0 whitespace-pre-wrap select-none">{hidden}</span>
     </div>
   );
 };
@@ -72,10 +34,26 @@ const TypewriterLine = ({ line, progress, showCursor }) => {
 export const VolumetricDialogue = ({ textItems, scroll, range }) => {
   const [start, end] = range;
   const totalDist = end - start;
+  const { play } = useSound();
+  const lastCharIndex = useRef(-1);
   
   // TYPE for 70% of the distance, then HOLD for 30% to allow reading
   const typeEnd = start + (totalDist * 0.7);
   const progress = Math.min(Math.max((scroll - start) / (typeEnd - start), 0), 1);
+
+  // Play sound on character reveal
+  const totalCharsOverall = textItems.join("").length;
+  const currentOverallIndex = Math.floor(progress * totalCharsOverall);
+  
+  useEffect(() => {
+    if (currentOverallIndex > lastCharIndex.current && progress < 1 && progress > 0) {
+      play('TYPEWRITER', { 
+        volume: 0.15, 
+        pitch: 0.9 + Math.random() * 0.2 // Add mechanical variance
+      });
+      lastCharIndex.current = currentOverallIndex;
+    }
+  }, [currentOverallIndex, progress, play]);
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-12 md:p-24 overflow-hidden gap-12">

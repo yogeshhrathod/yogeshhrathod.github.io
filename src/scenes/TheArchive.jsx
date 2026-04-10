@@ -2,41 +2,27 @@ import React from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { Database } from 'lucide-react';
 import { cn } from '../utils';
+import { useSound } from '../context/SoundContext';
+import { useHaptics } from '../context/HapticContext';
 import { projects } from '../data/resume';
 
 export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }) => {
   const [start, end] = range;
-  
-  // Smoother Fade-In / Fade-Out Logic
-  const opacity = useTransform(
-    lerpedScroll, 
-    [start - 500, start, end - 500, end], 
-    [0, 1, 1, 0]
-  );
-
-  // Position logic: Start with the first project perfectly centered
-  const scrollY = useTransform(lerpedScroll, [start, end], [0, -4000]);
-  const scrollZ = useTransform(lerpedScroll, [start, end], [0, 500]);
+  const { play } = useSound();
+  const { trigger } = useHaptics();
+  const scrollY = useTransform(lerpedScroll, [start, end], [1000, -2000]);
+  const scrollZ = useTransform(lerpedScroll, [start, end], [0, 200]);
 
   return (
-    <motion.section 
-      style={{ opacity }}
-      className={cn(
-        "absolute inset-0 flex flex-col items-center justify-center px-12 perspective-[2000px] overflow-hidden",
-        currentScroll >= (start - 500) && currentScroll < end ? "pointer-events-auto" : "pointer-events-none"
-      )}
-    >
+    <section className={cn(
+      "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px] overflow-hidden",
+      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+    )}>
       {/* MASSIVE SECTION HEADER */}
       <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
         <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute">PROJECTS</h2>
       </div>
 
-      <div className="absolute top-12 left-12 z-50">
-         <div className="flex items-center gap-4">
-            <Database className="text-molten-red w-5 h-5" strokeWidth={1} />
-            <span className="minimal-body font-bold text-stark">THE_ARCHIVE // SELECTED_WORKS</span>
-         </div>
-      </div>
       
       <motion.div 
         className="w-full max-w-5xl flex flex-col items-center gap-48 preserve-3d"
@@ -74,6 +60,10 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
                 href={proj.github} 
                 target="_blank" 
                 rel="noopener noreferrer" 
+                onMouseEnter={() => {
+                  play('HOVER_PHYSICAL', { volume: 0.1, pitch: 1.2 });
+                  trigger('light');
+                }}
                 className="w-full cursor-pointer pointer-events-auto group outline-none"
               >
                 {ProjectContent}
@@ -88,6 +78,6 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
       {/* Cinematic Vignette Slabs */}
       <div className="absolute top-0 w-full h-48 bg-gradient-to-b from-obsidian to-transparent pointer-events-none z-10" />
       <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-obsidian to-transparent pointer-events-none z-10" />
-    </motion.section>
+    </section>
   );
 };

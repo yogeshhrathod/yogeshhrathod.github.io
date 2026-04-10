@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, FileText, Download } from 'lucide-react';
 import { cn } from '../utils';
 import { projects, experience, education, achievements, skills } from '../data/resume';
+import { useSound } from '../context/SoundContext';
 
 export const FastReadOverlay = ({ isOpen, onClose }) => {
+  const { play } = useSound();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -38,7 +40,10 @@ export const FastReadOverlay = ({ isOpen, onClose }) => {
                   DL_SYSTEM_LOG
                  </button>
                  <button 
-                  onClick={onClose}
+                  onClick={() => {
+                    play('SWOOSH_CINEMATIC', { volume: 0.3, pitch: 0.8 });
+                    onClose();
+                  }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-zinc-700 transition-colors"
                 >
                   <X size={20} />
