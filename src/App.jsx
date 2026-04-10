@@ -80,67 +80,80 @@ const SubmergedParticles = () => {
 };
 
 const dialogues = [
-  { trigger: [1000, 2000], text: ["CHECK OUT MY PROJECTS."] },
+  { trigger: [1000, 2000], text: ["CHECK OUT MY PROJECTS.", "LIKE REMEMBERIT, LUNA_ AND SCOOTY."] },
   { trigger: [4000, 5000], text: ["AHHHHH... THAT'S LUNA.", "AND HERE IS MY WORK EXPERIENCE."] },
   { trigger: [7000, 8000], text: ["AND THIS IS MY EDUCATION."] },
 ];
 
-const TypewriterText = ({ text, active }) => {
-  const words = text.split(" ");
-  
+const VolumetricDialogue = ({ text, active, scrollProgress, label }) => {
   return (
-    <div className="flex flex-wrap justify-center overflow-visible">
-      {words.map((word, wi) => (
-        <div key={wi} className="flex whitespace-nowrap mr-[1.5rem] last:mr-0">
-          {Array.from(word).map((char, ci) => (
-            <motion.span
-              key={ci}
-              initial={{ opacity: 0, y: 10, filter: 'blur(10px)' }}
-              animate={active 
-                ? { opacity: 0.6, y: 0, filter: 'blur(0px)' } 
-                : { opacity: 0, y: -10, filter: 'blur(10px)' }
-              }
-              transition={{
-                duration: 0.8,
-                delay: active ? (wi * 5 + ci) * 0.05 : 0,
-                ease: [0.22, 1, 0.36, 1]
-              }}
-              className="titan-title text-[3vw] text-stark tracking-[1rem]"
-            >
-              {char}
-            </motion.span>
-          ))}
-        </div>
-      ))}
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+      {/* Background Vertical Anchor */}
+      <motion.div 
+        initial={{ x: -100, opacity: 0 }}
+        animate={active ? { x: 0, opacity: 0.05 } : { x: -100, opacity: 0 }}
+        className="tectonic-vertical absolute left-12 top-1/2 -translate-y-1/2 titan-title"
+      >
+        {label}
+      </motion.div>
+
+      {/* Main Dialogue Thought */}
+      <div className="relative z-10 flex flex-col items-center">
+        <motion.h2 
+          animate={active ? { filter: "blur(0px)", opacity: 1, scale: 1 } : { filter: "blur(40px)", opacity: 0, scale: 1.2 }}
+          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+          className={cn(
+            "titan-title text-[8vw] tracking-[3rem] text-stark text-center volumetric-glow",
+            active && "chromatic-glitch"
+          )}
+        >
+          {text[0]}
+        </motion.h2>
+        
+        {text[1] && (
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={active ? { opacity: 0.4, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ delay: 0.5, duration: 1 }}
+            className="minimal-body text-stark mt-8 tracking-[1rem]"
+          >
+            {text[1]}
+          </motion.p>
+        )}
+      </div>
+
+      {/* Lens Flare Sweep */}
+      <motion.div 
+        animate={active ? { x: ["-100%", "200%"] } : { x: "-100%" }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 pointer-events-none"
+      />
     </div>
   );
 };
 
-
 const NarrativeInterlude = ({ scroll }) => {
+  const labels = ["ARCHIVE", "ENGINE", "FOUNDATION"];
+  
   return (
-    <div className="fixed inset-0 z-[80] pointer-events-none">
+    <div className="fixed inset-0 z-[100] pointer-events-none">
       {dialogues.map((d, i) => {
         const isActive = scroll >= d.trigger[0] && scroll <= d.trigger[1];
-        return (
-          <div
+        return (isActive && 
+          <VolumetricDialogue 
             key={i}
-            className={cn(
-               "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
-               isActive ? "opacity-100" : "opacity-0"
-            )}
-          >
-            <div className="w-full max-w-4xl px-12">
-              {d.text.map((line, li) => (
-                <TypewriterText key={li} text={line} active={isActive} />
-              ))}
-            </div>
-          </div>
+            text={d.text} 
+            active={isActive}
+            label={labels[i] || "LOG"}
+          />
         );
       })}
     </div>
   );
 };
+
+
+
 
 
 
@@ -163,6 +176,7 @@ export default function App() {
   const projects = [
     { title: "REMEMBERIT", desc: "The Tag-Based File Explorer (Electron/SQLite). Intuitive drag and drop file organization, filtering, and reference management without relocating files.", date: "2024" },
     { title: "LUNA_", desc: "Next-Gen Intelligent Interface. Advanced data orchestration and seamless user experiences. Built for the modern web.", date: "2024 - PRESENT", github: "https://luna.wesparkvault.com/" },
+    { title: "SCOOTY", desc: "Urban Mobility Revolution. A seamless rental and tracking ecosystem for modern city transit.", date: "2024", github: "https://scooty.wesparkvault.com/" },
     { title: "AIS", desc: "Global Ship Tracking System (Gov Project). Analyzed past activities and identified suspicious maritime behavior in real-time.", date: "01/2021 - 12/2021" },
     { title: "SIMPLIFIED CREDIT", desc: "Financial Loan Aggregator. Automated generation of detailed Financial Models and Reports for bank viability assessments.", date: "01/2020 - 12/2020" },
   ];
