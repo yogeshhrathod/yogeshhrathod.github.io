@@ -59,20 +59,21 @@ export default function App() {
   }, [isFastReadOpen, lenis]);
 
   // Define dynamic ranges for dialogues (The gaps between scenes)
-  // INCREASED RANGES FOR READ TIME
+  // SIGNIFICANTLY INCREASED RANGES FOR READ TIME
   const DIALOGUE_RANGES = [
-    [vH * 1.2, vH * 3.0], 
-    [vH * 5.2, vH * 7.5], 
-    [vH * 9.2, vH * 11.5], 
+    [vH * 1.5, vH * 4.5], // Gap 1: Projects teaser
+    [vH * 8.5, vH * 11.5], // Gap 2: Experience teaser
+    [vH * 15.5, vH * 18.5], // Gap 3: Education teaser
   ];
 
   // Define dynamic ranges for scenes (Ensure no overlap)
+  // Extended ranges to give "Time to read" (Rule: Tectonic Scale)
   const RANGES = {
-    START: [0, vH * 1],
-    PROJECTS: [vH * 3.2, vH * 5.0],
-    EXPERIENCE: [vH * 7.8, vH * 9.0],
-    FOUNDATION: [vH * 12.0, vH * 14.5],
-    CONTACT: [vH * 15.0, vH * 16.5],
+    START: [0, vH * 1.5],
+    PROJECTS: [vH * 5.0, vH * 8.0],
+    EXPERIENCE: [vH * 12.0, vH * 15.0],
+    FOUNDATION: [vH * 19.0, vH * 22.0],
+    CONTACT: [vH * 23.5, vH * 25.0],
   };
 
   const cameraTransform = useCameraTransform(mousePos, drift, currentScroll);
@@ -80,7 +81,7 @@ export default function App() {
   return (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
         <div 
-          className="relative min-h-[1700vh] bg-obsidian transition-colors duration-700"
+          className="relative min-h-[2500vh] bg-obsidian transition-colors duration-700"
           ref={containerRef}
         >
           <div className="vignette" />
@@ -124,7 +125,11 @@ export default function App() {
              const [start, end] = item.range;
              const active = currentScroll >= start && currentScroll < end;
              return (
-               <div key={i} className="flex items-center justify-end gap-4 group cursor-pointer">
+               <div 
+                key={i} 
+                className="flex items-center justify-end gap-4 group cursor-pointer"
+                onClick={() => lenis?.scrollTo(start)}
+               >
                  <span className={cn(
                    "minimal-body text-[10px] tracking-[0.3rem] transition-all",
                    active ? "text-molten-red opacity-100" : "text-stark opacity-20 group-hover:opacity-100"

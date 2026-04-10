@@ -5,12 +5,17 @@ import { dialogues } from '../data/resume';
 
 /**
  * TypewriterChar 
- * Mechanical Reveal: Snaps into existence instantly (Rule XI).
  */
-const TypewriterChar = ({ char, index, progress, totalChars }) => {
+const TypewriterChar = ({ char, index, progress, totalChars, showCursor }) => {
   const focalPoint = progress * totalChars;
-  const isPast = index <= focalPoint;
-  const isCursor = Math.floor(focalPoint) === index;
+  // Use < instead of <= to prevent the first letter (index 0) from showing at progress 0
+  const isPast = index < focalPoint;
+  const isTarget = Math.floor(focalPoint) === index;
+  const isEndOfLine = index === totalChars - 1;
+
+  // Rule: Show cursor only if this character is the active typing point on an active line
+  // And hide it once the line is fully discovered
+  const activeCursor = showCursor && isTarget && progress < 1;
 
   return (
     <span className="relative inline-block">
@@ -19,35 +24,33 @@ const TypewriterChar = ({ char, index, progress, totalChars }) => {
           opacity: isPast ? 1 : 0,
           display: 'inline-block',
           whiteSpace: char === " " ? 'pre' : 'normal',
-          fontFamily: '"Special Elite", cursive',
-          fontSize: '3.5vw',
-          lineHeight: '1.2',
-          letterSpacing: '0.1rem',
-          // No transition for mechanical feel
+          fontFamily: '"Courier Prime", monospace',
+          fontSize: '2.2vw',
+          lineHeight: '1.4',
+          letterSpacing: '0.05rem',
           transition: 'none' 
         }}
-        className="text-stark"
+        className="text-stark font-bold"
       >
         {char}
       </span>
       
-      {/* Mechanical Carriage Cursor (Block Style) */}
-      {isCursor && (
+      {activeCursor && (
         <motion.div
           animate={{ opacity: [1, 0] }}
           transition={{ 
             repeat: Infinity, 
-            duration: 0.2, // Fast mechanical blink
+            duration: 0.2,
             ease: "steps(1)" 
           }}
-          className="absolute left-full top-[10%] w-[1.5vw] h-[80%] bg-molten-red ml-2 shadow-[0_0_15px_rgba(255,0,0,0.5)]"
+          className="absolute left-full top-[10%] w-[1.2vw] h-[80%] bg-molten-red ml-1 shadow-[0_0_10px_rgba(255,0,0,0.5)]"
         />
       )}
     </span>
   );
 };
 
-const TypewriterLine = ({ line, progress }) => {
+const TypewriterLine = ({ line, progress, showCursor }) => {
   const chars = line.split("");
   
   return (
@@ -59,6 +62,7 @@ const TypewriterLine = ({ line, progress }) => {
           index={i} 
           progress={progress} 
           totalChars={chars.length} 
+          showCursor={showCursor}
         />
       ))}
     </div>
@@ -67,22 +71,29 @@ const TypewriterLine = ({ line, progress }) => {
 
 export const VolumetricDialogue = ({ textItems, scroll, range }) => {
   const [start, end] = range;
-  const progress = Math.min(Math.max((scroll - start) / (end - start), 0), 1);
+  const totalDist = end - start;
+  
+  // TYPE for 70% of the distance, then HOLD for 30% to allow reading
+  const typeEnd = start + (totalDist * 0.7);
+  const progress = Math.min(Math.max((scroll - start) / (typeEnd - start), 0), 1);
 
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-12 md:p-24 overflow-hidden gap-12">
       {textItems.map((line, lineIdx) => {
-        // Sequential reveal: Each line takes a portion of the progress
         const segmentSize = 1 / textItems.length;
         const lineStart = lineIdx * segmentSize;
         const lineEnd = (lineIdx + 1) * segmentSize;
         const lineProgress = Math.min(Math.max((progress - lineStart) / segmentSize, 0), 1);
+        
+        // A line is "active" if it hasn't finished typing yet but has already started
+        const isLineActive = lineProgress > 0 && lineProgress < 1;
 
         return (
           <TypewriterLine 
             key={lineIdx}
             line={line}
             progress={lineProgress}
+            showCursor={isLineActive}
           />
         );
       })}
