@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  --color-obsidian: #020202;
+  --color-molten-red: #ff3300;
+  --color-stark-white: #ffffff;
+  
+  --font-titan: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --obsidian: #020202;
+    --molten: #ff3300;
+    --stark: #ffffff;
+  }
+
+  body {
+    background-color: var(--obsidian);
+    color: var(--stark);
+    overflow-x: hidden;
+    margin: 0;
+    font-family: var(--font-titan);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Scanlines Overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  /* Heavy Vignette */
+  .vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      circle,
+      transparent 40%,
+      rgba(0, 0, 0, 0.8) 120%
+    );
+    z-index: 9998;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .titan-title {
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 1.5rem;
+    line-height: 0.8;
+    text-transform: uppercase;
+  }
+
+  .minimal-body {
+    font-size: 10px;
+    letter-spacing: 0.5rem;
+    text-transform: uppercase;
+    font-weight: 400;
+    opacity: 0.6;
+  }
+
+  .text-shadow-molten {
+    text-shadow: 0 0 20px rgba(255, 51, 0, 0.5);
+  }
+
+  .god-ray {
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05), transparent);
+    width: 100px;
+    height: 200%;
+    position: absolute;
+    transform: rotate(25deg);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--obsidian);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--molten);
+}
+
+* {
+  box-sizing: border-box;
+}
