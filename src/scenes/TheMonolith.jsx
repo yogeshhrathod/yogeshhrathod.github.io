@@ -2,10 +2,11 @@ import React from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { cn } from '../utils';
 
-export const TheMonolith = ({ currentScroll, lerpedScroll }) => {
-  const monolithScale = useTransform(lerpedScroll, [0, 900], [1, 5]);
-  const monolithOpacity = useTransform(lerpedScroll, [800, 1000], [1, 0]);
-  const statusOpacity = useTransform(lerpedScroll, [0, 500], [1, 0]);
+export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], onOpenFastRead }) => {
+  const [start, end] = range;
+  const monolithScale = useTransform(lerpedScroll, [start, end], [1, 5]);
+  const monolithOpacity = useTransform(lerpedScroll, [start + (end - start) * 0.8, end], [1, 0]);
+  const statusOpacity = useTransform(lerpedScroll, [start, start + (end - start) * 0.5], [1, 0]);
   
   const sonicOpacity = useTransform(lerpedScroll, [4000, 4300, 4700, 5000], [0, 0.15, 0.15, 0]);
   const sonicScale = useTransform(lerpedScroll, [4000, 5000], [0.9, 1.2]);
@@ -13,7 +14,7 @@ export const TheMonolith = ({ currentScroll, lerpedScroll }) => {
   return (
     <section className={cn(
       "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
-      currentScroll < 1000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
        <motion.div 
         style={{ scale: monolithScale, opacity: monolithOpacity }}
@@ -21,9 +22,16 @@ export const TheMonolith = ({ currentScroll, lerpedScroll }) => {
        >
            <motion.div 
              style={{ opacity: statusOpacity }}
-             className="absolute top-12 left-12"
+             className="absolute top-12 left-12 flex flex-col gap-2"
            >
              <span className="minimal-body text-[10px] text-molten-red font-bold tracking-[0.5rem]">STATUS // OPERATIONAL</span>
+             <button 
+              onClick={onOpenFastRead}
+              className="minimal-body text-[10px] text-stark/60 hover:text-molten-red transition-all text-left tracking-[0.3rem] pointer-events-auto group mt-4 flex flex-col"
+             >
+                <span className="opacity-80 group-hover:opacity-100 transition-opacity">[/] ACCESS_OLD_WAY</span>
+                <span className="text-[7px] opacity-40 group-hover:opacity-80 transition-opacity mt-1">FOR_THOSE_WHO_DO_NOT_SCROLL</span>
+             </button>
            </motion.div>
 
            <div 

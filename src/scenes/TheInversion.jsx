@@ -2,11 +2,11 @@ import React from 'react';
 import { Terminal } from 'lucide-react';
 import { cn } from '../utils';
 
-export const TheInversion = ({ currentScroll }) => {
+export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
   return (
     <section className={cn(
       "absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000",
-      currentScroll >= 11000 ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll >= threshold ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
       {/* MASSIVE SECTION HEADER */}
       <div className="absolute top-[10%] left-0 w-full overflow-hidden pointer-events-none opacity-5">

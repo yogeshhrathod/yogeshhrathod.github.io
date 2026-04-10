@@ -3,11 +3,12 @@ import { motion, useTransform } from 'framer-motion';
 import { cn } from '../utils';
 import { experience, skills } from '../data/resume';
 
-export const TheEngine = ({ currentScroll, lerpedScroll }) => {
+export const TheEngine = ({ currentScroll, lerpedScroll, range = [5000, 7000] }) => {
+  const [start, end] = range;
   return (
     <section className={cn(
       "absolute inset-0 flex items-center justify-center transition-opacity duration-1000 px-24",
-      currentScroll >= 5000 && currentScroll < 7000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
       {/* MASSIVE SECTION HEADER */}
       <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
@@ -19,7 +20,7 @@ export const TheEngine = ({ currentScroll, lerpedScroll }) => {
           {experience.map((exp, i) => (
             <motion.div 
               key={i}
-              style={{ x: useTransform(lerpedScroll, [5000, 7000], [i % 2 === 0 ? 100 : -100, i % 2 === 0 ? -100 : 100]) }}
+              style={{ x: useTransform(lerpedScroll, [start, end], [i % 2 === 0 ? 100 : -100, i % 2 === 0 ? -100 : 100]) }}
               className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/20 pb-8 group"
             >
               <div className="flex flex-col">

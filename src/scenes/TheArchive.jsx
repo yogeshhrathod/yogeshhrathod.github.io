@@ -4,14 +4,15 @@ import { Database } from 'lucide-react';
 import { cn } from '../utils';
 import { projects } from '../data/resume';
 
-export const TheArchive = ({ currentScroll, lerpedScroll }) => {
-  const scrollY = useTransform(lerpedScroll, [2000, 4000], [1000, -2000]);
-  const scrollZ = useTransform(lerpedScroll, [2000, 4000], [0, 200]);
+export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }) => {
+  const [start, end] = range;
+  const scrollY = useTransform(lerpedScroll, [start, end], [1000, -2000]);
+  const scrollZ = useTransform(lerpedScroll, [start, end], [0, 200]);
 
   return (
     <section className={cn(
       "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px] overflow-hidden",
-      currentScroll >= 2000 && currentScroll < 4000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
       {/* MASSIVE SECTION HEADER */}
       <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">

@@ -3,17 +3,18 @@ import { motion, useTransform } from 'framer-motion';
 import { cn } from '../utils';
 import { education, achievements } from '../data/resume';
 
-export const TheFoundation = ({ currentScroll, lerpedScroll }) => {
-  const gridZ = useTransform(lerpedScroll, [8000, 10000], [0, 400]);
-  const academicX = useTransform(lerpedScroll, [8000, 9500], [200, -200]);
-  const academicZ = useTransform(lerpedScroll, [8000, 9500], [0, 100]);
-  const achievementX = useTransform(lerpedScroll, [8600, 10000], [-300, 300]);
-  const achievementZ = useTransform(lerpedScroll, [8600, 10000], [0, 150]);
+export const TheFoundation = ({ currentScroll, lerpedScroll, range = [8000, 10000] }) => {
+  const [start, end] = range;
+  const gridZ = useTransform(lerpedScroll, [start, end], [0, 400]);
+  const academicX = useTransform(lerpedScroll, [start, start + (end - start) * 0.75], [200, -200]);
+  const academicZ = useTransform(lerpedScroll, [start, start + (end - start) * 0.75], [0, 100]);
+  const achievementX = useTransform(lerpedScroll, [start + (end - start) * 0.3, end], [-300, 300]);
+  const achievementZ = useTransform(lerpedScroll, [start + (end - start) * 0.3, end], [0, 150]);
 
   return (
     <section className={cn(
       "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[3000px] overflow-hidden",
-      currentScroll >= 8000 && currentScroll < 10000 ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
        {/* MASSIVE SECTION HEADER */}
        <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
