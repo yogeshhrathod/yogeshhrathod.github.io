@@ -5,6 +5,12 @@ import { education, achievements } from '../data/resume';
 
 export const TheFoundation = ({ currentScroll, lerpedScroll, range = [8000, 10000] }) => {
   const [start, end] = range;
+  const opacity = useTransform(
+    lerpedScroll, 
+    [start - 500, start, end - 500, end], 
+    [0, 1, 1, 0]
+  );
+
   const gridZ = useTransform(lerpedScroll, [start, end], [0, 400]);
   const academicX = useTransform(lerpedScroll, [start, start + (end - start) * 0.75], [200, -200]);
   const academicZ = useTransform(lerpedScroll, [start, start + (end - start) * 0.75], [0, 100]);
@@ -12,10 +18,13 @@ export const TheFoundation = ({ currentScroll, lerpedScroll, range = [8000, 1000
   const achievementZ = useTransform(lerpedScroll, [start + (end - start) * 0.3, end], [0, 150]);
 
   return (
-    <section className={cn(
-      "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[3000px] overflow-hidden",
-      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-    )}>
+    <motion.section 
+      style={{ opacity }}
+      className={cn(
+        "absolute inset-0 flex flex-col items-center justify-center px-12 perspective-[3000px] overflow-hidden",
+        currentScroll >= (start - 500) && currentScroll < end ? "pointer-events-auto" : "pointer-events-none"
+      )}
+    >
        {/* MASSIVE SECTION HEADER */}
        <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
          <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute">FOUNDATION</h2>
@@ -93,6 +102,6 @@ export const TheFoundation = ({ currentScroll, lerpedScroll, range = [8000, 1000
              </div>
           </motion.div>
        </div>
-    </section>
+    </motion.section>
   );
 };

@@ -6,14 +6,26 @@ import { projects } from '../data/resume';
 
 export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }) => {
   const [start, end] = range;
-  const scrollY = useTransform(lerpedScroll, [start, end], [1000, -2000]);
-  const scrollZ = useTransform(lerpedScroll, [start, end], [0, 200]);
+  
+  // Smoother Fade-In / Fade-Out Logic
+  const opacity = useTransform(
+    lerpedScroll, 
+    [start - 500, start, end - 500, end], 
+    [0, 1, 1, 0]
+  );
+
+  // Position logic: Start with the first project perfectly centered
+  const scrollY = useTransform(lerpedScroll, [start, end], [0, -4000]);
+  const scrollZ = useTransform(lerpedScroll, [start, end], [0, 500]);
 
   return (
-    <section className={cn(
-      "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px] overflow-hidden",
-      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-    )}>
+    <motion.section 
+      style={{ opacity }}
+      className={cn(
+        "absolute inset-0 flex flex-col items-center justify-center px-12 perspective-[2000px] overflow-hidden",
+        currentScroll >= (start - 500) && currentScroll < end ? "pointer-events-auto" : "pointer-events-none"
+      )}
+    >
       {/* MASSIVE SECTION HEADER */}
       <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">
         <h2 className="titan-title text-[25vw] whitespace-nowrap -translate-x-1/2 left-1/2 absolute">PROJECTS</h2>
@@ -76,6 +88,6 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
       {/* Cinematic Vignette Slabs */}
       <div className="absolute top-0 w-full h-48 bg-gradient-to-b from-obsidian to-transparent pointer-events-none z-10" />
       <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-obsidian to-transparent pointer-events-none z-10" />
-    </section>
+    </motion.section>
   );
 };
