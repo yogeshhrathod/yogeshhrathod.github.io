@@ -18,6 +18,7 @@ import { useHandheldDrift } from './hooks/useHandheldDrift';
 import { useCameraTransform } from './hooks/useCameraTransform';
 import { CinematicLoader } from './components/CinematicLoader';
 import { AtmosphericMetadata } from './components/AtmosphericMetadata';
+import { useCinematicScript } from './hooks/useCinematicScript';
 
 export default function App() {
   const containerRef = useRef(null);
@@ -91,6 +92,7 @@ export default function App() {
     [vH * 1.5, vH * 4.5], // Gap 1: Projects teaser
     [vH * 8.5, vH * 11.5], // Gap 2: Experience teaser
     [vH * 15.5, vH * 18.5], // Gap 3: Education teaser
+    [vH * 22.0, vH * 23.4], // Gap 4: Contact teaser
   ];
 
   // Define dynamic ranges for scenes (Ensure no overlap)
@@ -105,21 +107,8 @@ export default function App() {
 
   const cameraTransform = useCameraTransform(xPercent, yPercent, drift, scrollY);
 
-  // Trigger sounds on major scroll milestones
-  const lastSection = useRef(null);
-  useEffect(() => {
-    let activeSection = null;
-    Object.entries(RANGES).forEach(([key, [start, end]]) => {
-      if (currentScroll >= start && currentScroll < end) {
-        activeSection = key;
-      }
-    });
-
-    if (activeSection && activeSection !== lastSection.current) {
-      play('HEAVY_THUD', { volume: 0.05 });
-      lastSection.current = activeSection;
-    }
-  }, [currentScroll, play, RANGES]);
+  // Execute the central cinematic script (Audio & Haptics)
+  useCinematicScript(currentScroll, vH);
 
   return (
     <>
@@ -128,10 +117,11 @@ export default function App() {
       {hasEntered && (
         <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
             <div 
-              className="relative min-h-[2500vh] bg-obsidian transition-colors duration-700"
+              className="relative min-h-[2500vh] bg-charcoal transition-colors duration-700"
               ref={containerRef}
             >
           <div className="vignette" />
+          <div className="ambient-pool" />
           <SubmergedParticles />
           <NarrativeInterlude scroll={currentScroll} ranges={DIALOGUE_RANGES} />
           <AtmosphericMetadata isVisible={!isFastReadOpen} />
@@ -160,7 +150,7 @@ export default function App() {
           <TheArchive currentScroll={currentScroll} lerpedScroll={lerpedScroll} range={RANGES.PROJECTS} />
           <TheEngine currentScroll={currentScroll} lerpedScroll={lerpedScroll} range={RANGES.EXPERIENCE} />
           <TheFoundation currentScroll={currentScroll} lerpedScroll={lerpedScroll} range={RANGES.FOUNDATION} />
-          <TheInversion currentScroll={currentScroll} threshold={RANGES.CONTACT[0]} />
+          <TheInversion currentScroll={currentScroll} lerpedScroll={lerpedScroll} threshold={RANGES.CONTACT[0]} />
         </motion.div>
 
         <SoundControl />

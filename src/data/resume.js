@@ -1,5 +1,10 @@
 export const projects = [
   { 
+    title: "AGENTIC_CORE", 
+    desc: "Autonomous AI Orchestration. Building goal-oriented agents that think, plan, and execute. The future of software is agentic.", 
+    date: "2024 - BEYOND", 
+  },
+  { 
     title: "LUNA_", 
     desc: "Next-Gen Intelligent Interface. Heavy data orchestration and seamless user experiences. Manifested for the modern web.", 
     date: "2024 - PRESENT", 
@@ -69,9 +74,9 @@ export const achievements = [
 ];
 
 export const skills = [
-  "TYPESCRIPT", "NODEJS", "REACTJS", "ELECTRON", "MAPBOX", "AWS", 
-  "NESTJS", "POSTGRESQL", "VUEJS", "ANGULAR", "EXPRESSJS", 
-  "CI/CD", "CYPRESS", "MICROSERVICES", "MONGODB"
+  "AGENTIC AI", "LLM ORCHESTRATION", "RAG", "TYPESCRIPT", "NODEJS", "REACTJS", 
+  "ELECTRON", "MAPBOX", "AWS", "NESTJS", "POSTGRESQL", "VUEJS", 
+  "CI/CD", "MICROSERVICES", "MONGODB", "PYTHON"
 ];
 
 export const dialogues = [
@@ -79,8 +84,8 @@ export const dialogues = [
     trigger: [1000, 2000], 
     text: [
       "SIMPLE.", 
-      "HERE ARE SOME OF MY PROJECTS.",
-      "STUFF I'VE BUILT TO SOLVE REAL PROBLEMS."
+      "I BUILD AGENTIC SYSTEMS AND COOL PRODUCTS.",
+      "THE NEXT EVOLUTION OF INTELLIGENT CODE."
     ] 
   },
   { 
@@ -97,6 +102,14 @@ export const dialogues = [
       "THE ROOTS.", 
       "WHERE I LEARNED THE CRAFT.",
       "FROM FIRST LINES OF CODE TO ARCHITECTING SOLUTIONS."
+    ] 
+  },
+  { 
+    trigger: [10000, 11000], 
+    text: [
+      "SIMPLE.", 
+      "ESTABLISH CONTACT.",
+      "LET'S BUILD SOMETHING BEYOND."
     ] 
   },
 ];

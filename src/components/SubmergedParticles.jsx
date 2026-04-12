@@ -16,13 +16,13 @@ export const SubmergedParticles = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const particles = Array.from({ length: 120 }, () => ({
+    const particles = Array.from({ length: 250 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2 + 0.5,
-      speedX: (Math.random() - 0.5) * 0.08,
-      speedY: (Math.random() - 0.5) * 0.08,
-      opacity: Math.random() * 0.4 + 0.1,
+      size: Math.random() * 2.5 + 1,
+      speedX: (Math.random() - 0.5) * 0.1,
+      speedY: Math.random() * 0.15 + 0.05, // Downward bias
+      opacity: Math.random() * 0.5 + 0.2,
     }));
 
     const render = () => {
@@ -36,7 +36,7 @@ export const SubmergedParticles = () => {
         if (p.x < 0) p.x = width;
         if (p.x > width) p.x = 0;
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+        ctx.fillStyle = `rgba(232, 228, 223, ${p.opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -61,7 +61,7 @@ export const SubmergedParticles = () => {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 pointer-events-none z-10 opacity-30 mix-blend-screen"
+      className="fixed inset-0 pointer-events-none z-[10001] opacity-50 mix-blend-screen"
     />
   );
 };

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { motion, useTransform, useSpring } from 'framer-motion';
+import { motion, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { cn } from '../utils';
 import { useSound } from '../context/SoundContext';
 import { useHaptics } from '../context/HapticContext';
@@ -12,66 +12,19 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
   const hasPlayedZoom = useRef(false);
   const introAudioRef = useRef(null);
   const zoomAudioRef = useRef(null);
-  const prevScroll = useRef(0);
-  
   const currentScrollRef = useRef(currentScroll);
-  currentScrollRef.current = currentScroll;
 
   useEffect(() => {
-    if (!isUnlocked || isMuted) {
-       prevScroll.current = currentScroll;
-       return;
-    }
-
-    const isScrollingDown = currentScroll > prevScroll.current;
-
-    // Reveal Sound (1 Second Delay)
-    if (currentScroll >= start && currentScroll < end && !hasPlayedIntro.current) {
-        hasPlayedIntro.current = true;
-        setTimeout(() => {
-          if (!isMuted && currentScrollRef.current >= start && currentScrollRef.current < end) {
-            introAudioRef.current = play('INTRO_REVEAL', { volume: 0.5 });
-          }
-        }, 1000);
-    }
-    
-    // Zoom Sound (Triggered at 30% into the range, ONLY when scrolling DOWN)
-    const zoomThreshold = start + (end - start) * 0.3;
-    if (currentScroll >= zoomThreshold && currentScroll < end && !hasPlayedZoom.current) {
-        if (isScrollingDown) {
-          zoomAudioRef.current = play('SWOOSH_CINEMATIC', { volume: 0.3, pitch: 0.8 });
-          hasPlayedZoom.current = true;
-        }
-    }
-
-    // Explicit Audio Kill-Switch: If user scrolls out of the bounds, cut the audio immediately.
-    if (currentScroll < start || currentScroll >= end) {
-       if (introAudioRef.current) {
-         introAudioRef.current.pause();
-         introAudioRef.current = null;
-       }
-       if (zoomAudioRef.current) {
-         zoomAudioRef.current.pause();
-         zoomAudioRef.current = null;
-       }
-    }
-
-    // Reset markers if scrolled back above start strictly
-    if (currentScroll <= start + 10) {
-      hasPlayedIntro.current = false;
-      hasPlayedZoom.current = false;
-    }
-
-    prevScroll.current = currentScroll;
-  }, [currentScroll, start, end, play, isMuted, isUnlocked]);
+    currentScrollRef.current = currentScroll;
+  }, [currentScroll]);
 
   const monolithScale = useTransform(lerpedScroll, [start, end], [1, 5]);
   const monolithOpacity = useTransform(lerpedScroll, [start + (end - start) * 0.8, end], [1, 0]);
   const statusOpacity = useTransform(lerpedScroll, [start, start + (end - start) * 0.5], [1, 0]);
   
-  const flashlightX = useSpring(0, { stiffness: 100, damping: 30 });
-  const flashlightY = useSpring(0, { stiffness: 100, damping: 30 });
-  const flashlightOpacity = useSpring(0, { stiffness: 100, damping: 30 });
+  const flashlightX = useMotionValue(0);
+  const flashlightY = useMotionValue(0);
+  const flashlightOpacity = useMotionValue(0);
   const titleContainerRef = React.useRef(null);
 
   const handleMouseMove = (e) => {
@@ -92,7 +45,7 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
   return (
     <section className={cn(
       "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
-      currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none hidden"
     )}>
 
        <motion.button 
@@ -101,21 +54,21 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
            opacity: 1, 
            x: 0,
            boxShadow: [
-             "0 0 0px rgba(255, 51, 0, 0)",
-             "0 0 15px rgba(255, 51, 0, 0.4)",
-             "0 0 0px rgba(255, 51, 0, 0)"
+             "0 0 0px rgba(166, 52, 27, 0)",
+             "0 0 15px rgba(166, 52, 27, 0.2)",
+             "0 0 0px rgba(166, 52, 27, 0)"
            ],
            borderColor: [
-             "rgba(255, 255, 255, 0.1)",
-             "rgba(255, 51, 0, 0.4)",
-             "rgba(255, 255, 255, 0.1)"
+             "rgba(232, 228, 223, 0.1)",
+             "rgba(166, 52, 27, 0.2)",
+             "rgba(232, 228, 223, 0.1)"
            ]
          }}
          transition={{ 
-           opacity: { delay: 4, duration: 1 },
-           x: { delay: 4, duration: 1 },
-           boxShadow: { repeat: Infinity, duration: 3, ease: "easeInOut", delay: 5 },
-           borderColor: { repeat: Infinity, duration: 3, ease: "easeInOut", delay: 5 }
+           opacity: { delay: 4, duration: 2 },
+           x: { delay: 4, duration: 2 },
+           boxShadow: { repeat: Infinity, duration: 4, ease: "easeInOut", delay: 5 },
+           borderColor: { repeat: Infinity, duration: 4, ease: "easeInOut", delay: 5 }
          }}
          whileHover="hover"
          initial="initial"
@@ -128,22 +81,22 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
             play('HOVER_PHYSICAL', { volume: 0.1, pitch: 1.5 });
             trigger('light');
          }}
-         className="fixed top-12 right-12 px-8 py-3 border border-white/10 bg-white/5 backdrop-blur-xl rounded-full minimal-body text-[10px] text-stark/80 hover:text-white transition-all pointer-events-auto z-[300] group flex items-center gap-4 cursor-pointer overflow-hidden"
+         className="fixed top-12 right-12 px-8 py-3 border border-white/5 bg-white/5 backdrop-blur-xl rounded-full minimal-body text-[10px] text-stark/60 hover:text-white transition-all pointer-events-auto z-[300] group flex items-center gap-4 cursor-pointer overflow-hidden"
        >
-          {/* High Speed Lens Flare Sweep */}
+          {/* High Speed Lens Flare Sweep - Desaturated */}
           <motion.div 
             variants={{
               initial: { x: "-150%", skewX: -20 },
               hover: { x: "150%", skewX: -20 }
             }}
-            transition={{ duration: 0.4, ease: "circOut" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent z-0"
+            transition={{ duration: 0.6, ease: "circOut" }}
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"
           />
 
-          <div className="w-1.5 h-1.5 rounded-full bg-molten-red relative z-10" />
+          <div className="w-1.5 h-1.5 rounded-full bg-molten-red/50 relative z-10" />
           <div className="flex flex-col items-start leading-tight relative z-10">
-            <span className="tracking-[0.2rem]">RESUME / PDF</span>
-            <span className="text-[6px] opacity-40 group-hover:opacity-100 tracking-normal normal-case transition-opacity">Just the facts</span>
+            <span className="tracking-[0.2rem]">RESUME // DATA</span>
+            <span className="text-[6px] opacity-20 group-hover:opacity-60 tracking-normal normal-case transition-opacity">Architectural Brief</span>
           </div>
 
           {/* Selection Flash */}
@@ -169,9 +122,9 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
            >
              <motion.h1 
               initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
-              animate={{ filter: "blur(0px)", opacity: 0.4, letterSpacing: "1.2rem", scale: 1 }}
-              transition={{ duration: 3.5, ease: "easeOut" }}
-              className="titan-title text-[15vw] text-stark leading-none text-center select-none"
+              animate={{ filter: "blur(0px)", opacity: 0.3, letterSpacing: "1.2rem", scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="titan-title text-[15vw] text-stark leading-none text-center select-none drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
              >
                YOGESH<br/>RATHOD
              </motion.h1>
@@ -188,8 +141,8 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
                <motion.h1 
                 initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
                 animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "1.2rem", scale: 1 }}
-                transition={{ duration: 3.5, ease: "easeOut" }}
-                className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none"
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none volumetric-glow drop-shadow-[0_0_40px_rgba(255,255,255,0.4)]"
                >
                  YOGESH<br/>RATHOD
                </motion.h1>
@@ -201,8 +154,8 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
             transition={{ duration: 1.5, delay: 2, ease: "easeOut" }}
             className="mt-12 flex flex-col items-center gap-6"
           >
-            <span className="minimal-body text-molten font-bold text-xl tracking-[1rem]">I BUILD COOL STUFF.</span>
-            <span className="minimal-body italic opacity-80">FULL STACK DEVELOPER / NODEJS / CLOUD ARCHITECT</span>
+            <span className="minimal-body text-molten font-bold text-xl tracking-[1rem]">I BUILD AGENTIC SYSTEMS.</span>
+            <span className="minimal-body italic opacity-80">AI ORCHESTRATOR / FULL STACK ARCHITECT / AGENTIC CODER</span>
           </motion.div>
        </motion.div>
 

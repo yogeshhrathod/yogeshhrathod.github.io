@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-obsidian: #020202;
-  --color-molten-red: #ff3300;
-  --color-stark: #ffffff;
+  --color-obsidian: #0d0d0d;
+  --color-charcoal: #121110;
+  --color-silver-birch: #e8e4df;
+  --color-muted-ochre: #8c7a6b;
+  --color-molten-red: #a6341b;
+  --color-stark: #e8e4df;
   
   --font-titan: "Inter", system-ui, sans-serif;
   --font-serif: "EB Garamond", serif;
@@ -11,18 +14,36 @@
 
 @layer base {
   :root {
-    --obsidian: #020202;
-    --molten: #ff3300;
-    --stark: #ffffff;
+    --obsidian: #0d0d0d;
+    --charcoal: #121110;
+    --stark: #e8e4df;
+    --molten: #a6341b;
+    --ochre: #8c7a6b;
   }
 
   body {
-    background-color: var(--obsidian);
+    background-color: var(--charcoal);
     color: var(--stark);
     overflow-x: hidden;
     margin: 0;
     font-family: var(--font-titan);
     -webkit-font-smoothing: antialiased;
+    cursor: none;
+  }
+
+  /* Material Texture Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+    opacity: 0.03;
+    z-index: 10000;
+    pointer-events: none;
+    mix-blend-mode: overlay;
   }
 
   /* Scanlines Overlay */
@@ -44,6 +65,7 @@
   }
 
   /* Heavy Vignette */
+  /* Soft Atmospheric Haze */
   .vignette {
     position: fixed;
     top: 0;
@@ -51,11 +73,28 @@
     width: 100%;
     height: 100%;
     background: radial-gradient(
-      circle,
-      transparent 30%,
-      rgba(0, 0, 0, 0.9) 110%
+      circle at 50% 50%,
+      transparent 20%,
+      rgba(13, 13, 13, 0.4) 60%,
+      rgba(18, 17, 16, 0.95) 100%
     );
     z-index: 9998;
+    pointer-events: none;
+  }
+
+  /* Ambient Pool of Light */
+  .ambient-pool {
+    position: fixed;
+    width: 150vw;
+    height: 150vh;
+    top: -25vh;
+    left: -25vw;
+    background: radial-gradient(
+      circle at 80% 20%,
+      rgba(140, 122, 107, 0.05) 0%,
+      transparent 50%
+    );
+    z-index: 1;
     pointer-events: none;
   }
 }
@@ -153,9 +192,20 @@
     letter-spacing: -0.02rem;
     line-height: 1.1;
     text-transform: none;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+    color: var(--stark);
+    filter: drop-shadow(0 0 10px rgba(232, 228, 223, 0.15));
     --bnce: 0;
     --infm: 0;
+  }
+
+  .thin-border {
+    border: 1px solid rgba(232, 228, 223, 0.1);
+  }
+
+  .material-card {
+    background: rgba(18, 17, 16, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(232, 228, 223, 0.05);
   }
 }
 

@@ -10,7 +10,7 @@ export const TheEngine = ({ currentScroll, lerpedScroll, range = [12000, 15000] 
   return (
     <section className={cn(
       "absolute inset-0 flex items-center justify-center transition-opacity duration-1000 px-24",
-      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none hidden"
     )}>
       {/* MASSIVE SECTION HEADER */}
       <div className="absolute top-[15%] left-0 w-full overflow-hidden pointer-events-none opacity-10">

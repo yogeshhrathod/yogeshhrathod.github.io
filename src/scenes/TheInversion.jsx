@@ -1,40 +1,26 @@
 import React, { useEffect, useRef } from 'react';
+import { motion, useTransform } from 'framer-motion';
 import { Terminal } from 'lucide-react';
 import { cn } from '../utils';
 import { useSound } from '../context/SoundContext';
 import { useHaptics } from '../context/HapticContext';
 
-export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
+export const TheInversion = ({ currentScroll, lerpedScroll, threshold = 11000 }) => {
   const { play, isMuted, isUnlocked } = useSound();
   const { trigger } = useHaptics();
-  const ambientRef = useRef(null);
-
-  useEffect(() => {
-    if (!isUnlocked) return;
-
-    if (currentScroll >= threshold && !isMuted) {
-      if (!ambientRef.current) {
-        ambientRef.current = play('END_CREDITS', { loop: true, volume: 0.2, pitch: 0.8, clone: false });
-      }
-    } else {
-      if (ambientRef.current) {
-        ambientRef.current.pause();
-        ambientRef.current = null;
-      }
-    }
-    
-    return () => {
-      if (ambientRef.current) {
-        ambientRef.current.pause();
-      }
-    }
-  }, [currentScroll, threshold, isMuted, play, isUnlocked]);
+  
+  const opacity = useTransform(lerpedScroll, [threshold - 500, threshold], [0, 1]);
+  const scale = useTransform(lerpedScroll, [threshold - 500, threshold], [0.95, 1]);
 
   return (
-    <section className={cn(
-      "absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000",
-      currentScroll >= threshold ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-    )}>
+    <motion.section 
+      style={{ opacity, scale }}
+      className={cn(
+        "absolute inset-0 flex flex-col items-center justify-center bg-stark transition-colors duration-1000",
+        currentScroll >= threshold - 500 ? "flex" : "hidden",
+        currentScroll >= threshold ? "pointer-events-auto" : "pointer-events-none"
+      )}
+    >
       <div className="text-obsidian text-center px-6 md:px-12 w-full max-w-5xl">
         <h2 className="titan-title text-[10vw] md:text-[8vw] tracking-[-0.2rem] md:tracking-[-0.5rem] italic text-shadow-none leading-[0.8]">LET'S<br/>TALK.</h2>
         
@@ -142,6 +128,6 @@ export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
            >INSTANT</a>
         </div>
       </footer>
-    </section>
+    </motion.section>
   );
 };
