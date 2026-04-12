@@ -28,26 +28,26 @@ export const useCinematicScript = (currentScroll, vH) => {
           { id: 'intro_drone', type: 'trigger', triggerAt: 50, sound: 'INTRO_REVEAL', volume: 0.5, haptic: null },
           // The "Name Zoom" woosh.
           { id: 'name_zoom_woosh', type: 'trigger', triggerAt: vH * 0.3, sound: 'NAME_ZOOM', volume: 0.4, pitch: 0.85, haptic: 'medium' },
-          { id: 'thud_projects', type: 'trigger', triggerAt: vH * 4.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+          { id: 'thud_projects', type: 'trigger', triggerAt: vH * 5.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
         ]
       },
       {
         act: 'ACT II: THE ARCHIVE',
         events: [
-          { id: 'thud_experience', type: 'trigger', triggerAt: vH * 11.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+          { id: 'thud_experience', type: 'trigger', triggerAt: vH * 15.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
         ]
       },
       {
         act: 'ACT III: THE ENGINE',
         events: [
-          { id: 'thud_foundation', type: 'trigger', triggerAt: vH * 18.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+          { id: 'thud_foundation', type: 'trigger', triggerAt: vH * 22.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
         ]
       },
       {
         act: 'ACT IV: THE INVERSION',
         events: [
-          { id: 'thud_contact', type: 'trigger', triggerAt: vH * 23.4, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
-          { id: 'contact_ambient', type: 'ambient', range: [vH * 23.5, vH * 26.0], sound: 'END_CREDITS', volume: 0.2, pitch: 0.8 },
+          { id: 'thud_contact', type: 'trigger', triggerAt: vH * 27.4, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+          { id: 'contact_ambient', type: 'ambient', range: [vH * 27.0, vH * 32.0], sound: 'END_CREDITS', volume: 0.2, pitch: 0.8 },
         ]
       }
     ];
@@ -67,8 +67,9 @@ export const useCinematicScript = (currentScroll, vH) => {
             }
           }
           
-          // Reset trigger if scrolled significantly back above
-          if (currentScroll < event.triggerAt - (vH * 0.1)) {
+          // Reset triggers only if the user scrolls all the way back to the top
+          // This prevents 'glitchy' re-triggering if the user repeatedly scrolls slightly up and down
+          if (currentScroll <= 10) {
             playedTriggers.current.delete(event.id);
           }
         }

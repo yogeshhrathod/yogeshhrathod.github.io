@@ -28,7 +28,6 @@
     margin: 0;
     font-family: var(--font-titan);
     -webkit-font-smoothing: antialiased;
-    cursor: none;
   }
 
   /* Material Texture Overlay */

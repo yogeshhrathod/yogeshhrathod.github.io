@@ -89,20 +89,20 @@ export default function App() {
   // Define dynamic ranges for dialogues (The gaps between scenes)
   // SIGNIFICANTLY INCREASED RANGES FOR READ TIME
   const DIALOGUE_RANGES = [
-    [vH * 1.5, vH * 4.5], // Gap 1: Projects teaser
-    [vH * 8.5, vH * 11.5], // Gap 2: Experience teaser
-    [vH * 15.5, vH * 18.5], // Gap 3: Education teaser
-    [vH * 22.0, vH * 23.4], // Gap 4: Contact teaser
+    [vH * 1.5, vH * 5.5], // Gap 1: Projects teaser
+    [vH * 12.5, vH * 15.5], // Gap 2: Experience teaser
+    [vH * 19.5, vH * 22.5], // Gap 3: Education teaser
+    [vH * 26.0, vH * 27.4], // Gap 4: Contact teaser
   ];
 
   // Define dynamic ranges for scenes (Ensure no overlap)
   // Extended ranges to give "Time to read" (Rule: Tectonic Scale)
   const RANGES = {
     START: [0, vH * 1.5],
-    PROJECTS: [vH * 5.0, vH * 8.0],
-    EXPERIENCE: [vH * 12.0, vH * 15.0],
-    FOUNDATION: [vH * 19.0, vH * 22.0],
-    CONTACT: [vH * 23.5, vH * 25.0],
+    PROJECTS: [vH * 6.0, vH * 12.0], // DOUBLED ROAD (6.0 vH)
+    EXPERIENCE: [vH * 16.0, vH * 19.0],
+    FOUNDATION: [vH * 23.0, vH * 26.0],
+    CONTACT: [vH * 27.5, vH * 29.0],
   };
 
   const cameraTransform = useCameraTransform(xPercent, yPercent, drift, scrollY);
@@ -117,12 +117,17 @@ export default function App() {
       {hasEntered && (
         <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
             <div 
-              className="relative min-h-[2500vh] bg-charcoal transition-colors duration-700"
+              className="relative min-h-[3500vh] bg-charcoal transition-colors duration-700"
               ref={containerRef}
             >
           <div className="vignette" />
           <div className="ambient-pool" />
-          <SubmergedParticles />
+          <div className={cn(
+            "transition-opacity duration-1000",
+            currentScroll >= RANGES.CONTACT[0] - 500 ? "opacity-0" : "opacity-100"
+          )}>
+            <SubmergedParticles />
+          </div>
           <NarrativeInterlude scroll={currentScroll} ranges={DIALOGUE_RANGES} />
           <AtmosphericMetadata isVisible={!isFastReadOpen} />
         

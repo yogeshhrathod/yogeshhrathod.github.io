@@ -39,8 +39,8 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
     ([x, y]) => `circle(150px at ${x}px ${y}px)`
   );
 
-  const sonicOpacity = useTransform(lerpedScroll, [4000, 4300, 4700, 5000], [0, 0.15, 0.15, 0]);
-  const sonicScale = useTransform(lerpedScroll, [4000, 5000], [0.9, 1.2]);
+  const sonicOpacity = useTransform(lerpedScroll, [start + (end - start) * 0.7, start + (end - start) * 0.8, start + (end - start) * 0.95, end], [0, 0.15, 0.15, 0]);
+  const sonicScale = useTransform(lerpedScroll, [start + (end - start) * 0.7, end], [0.9, 1.2]);
 
   return (
     <section className={cn(
@@ -122,9 +122,9 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
            >
              <motion.h1 
               initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
-              animate={{ filter: "blur(0px)", opacity: 0.3, letterSpacing: "1.2rem", scale: 1 }}
+              animate={{ filter: "blur(0px)", opacity: 0.4, letterSpacing: "1.2rem", scale: 1 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
-              className="titan-title text-[15vw] text-stark leading-none text-center select-none drop-shadow-[0_10px_40px_rgba(0,0,0,0.9)]"
+              className="titan-title text-[15vw] text-stark leading-none text-center select-none drop-shadow-[0_4px_16px_rgba(232,228,223,0.25)]"
              >
                YOGESH<br/>RATHOD
              </motion.h1>
