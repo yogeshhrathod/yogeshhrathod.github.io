@@ -16,6 +16,7 @@ import { TheFoundation } from './scenes/TheFoundation';
 import { TheInversion } from './scenes/TheInversion';
 import { useHandheldDrift } from './hooks/useHandheldDrift';
 import { useCameraTransform } from './hooks/useCameraTransform';
+import { CinematicLoader } from './components/CinematicLoader';
 
 export default function App() {
   const containerRef = useRef(null);
@@ -23,6 +24,7 @@ export default function App() {
   const { play } = useSound();
   const { trigger } = useHaptics();
   const [isFastReadOpen, setIsFastReadOpen] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
   
   // High-performance Mouse Tracking (Avoiding re-renders)
   const xPercent = useSpring(0, { stiffness: 50, damping: 30 });
@@ -119,11 +121,15 @@ export default function App() {
   }, [currentScroll, play, RANGES]);
 
   return (
-    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
-        <div 
-          className="relative min-h-[2500vh] bg-obsidian transition-colors duration-700"
-          ref={containerRef}
-        >
+    <>
+      {!hasEntered && <CinematicLoader onEnter={() => setHasEntered(true)} />}
+      
+      {hasEntered && (
+        <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
+            <div 
+              className="relative min-h-[2500vh] bg-obsidian transition-colors duration-700"
+              ref={containerRef}
+            >
           <div className="vignette" />
           <SubmergedParticles />
           <NarrativeInterlude scroll={currentScroll} ranges={DIALOGUE_RANGES} />
@@ -198,6 +204,8 @@ export default function App() {
 
       </div>
 
-    </ReactLenis>
+        </ReactLenis>
+      )}
+    </>
   );
 }

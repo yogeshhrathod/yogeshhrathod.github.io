@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, useTransform, useSpring } from 'framer-motion';
 import { cn } from '../utils';
 import { useSound } from '../context/SoundContext';
@@ -6,8 +6,65 @@ import { useHaptics } from '../context/HapticContext';
 
 export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], onOpenFastRead }) => {
   const [start, end] = range;
-  const { play } = useSound();
+  const { play, isMuted, isUnlocked } = useSound();
   const { trigger } = useHaptics();
+  const hasPlayedIntro = useRef(false);
+  const hasPlayedZoom = useRef(false);
+  const introAudioRef = useRef(null);
+  const zoomAudioRef = useRef(null);
+  const prevScroll = useRef(0);
+  
+  const currentScrollRef = useRef(currentScroll);
+  currentScrollRef.current = currentScroll;
+
+  useEffect(() => {
+    if (!isUnlocked || isMuted) {
+       prevScroll.current = currentScroll;
+       return;
+    }
+
+    const isScrollingDown = currentScroll > prevScroll.current;
+
+    // Reveal Sound (1 Second Delay)
+    if (currentScroll >= start && currentScroll < end && !hasPlayedIntro.current) {
+        hasPlayedIntro.current = true;
+        setTimeout(() => {
+          if (!isMuted && currentScrollRef.current >= start && currentScrollRef.current < end) {
+            introAudioRef.current = play('INTRO_REVEAL', { volume: 0.5 });
+          }
+        }, 1000);
+    }
+    
+    // Zoom Sound (Triggered at 30% into the range, ONLY when scrolling DOWN)
+    const zoomThreshold = start + (end - start) * 0.3;
+    if (currentScroll >= zoomThreshold && currentScroll < end && !hasPlayedZoom.current) {
+        if (isScrollingDown) {
+          zoomAudioRef.current = play('SWOOSH_CINEMATIC', { volume: 0.3, pitch: 0.8 });
+          hasPlayedZoom.current = true;
+        }
+    }
+
+    // Explicit Audio Kill-Switch: If user scrolls out of the bounds, cut the audio immediately.
+    if (currentScroll < start || currentScroll >= end) {
+       if (introAudioRef.current) {
+         introAudioRef.current.pause();
+         introAudioRef.current = null;
+       }
+       if (zoomAudioRef.current) {
+         zoomAudioRef.current.pause();
+         zoomAudioRef.current = null;
+       }
+    }
+
+    // Reset markers if scrolled back above start strictly
+    if (currentScroll <= start + 10) {
+      hasPlayedIntro.current = false;
+      hasPlayedZoom.current = false;
+    }
+
+    prevScroll.current = currentScroll;
+  }, [currentScroll, start, end, play, isMuted, isUnlocked]);
+
   const monolithScale = useTransform(lerpedScroll, [start, end], [1, 5]);
   const monolithOpacity = useTransform(lerpedScroll, [start + (end - start) * 0.8, end], [1, 0]);
   const statusOpacity = useTransform(lerpedScroll, [start, start + (end - start) * 0.5], [1, 0]);

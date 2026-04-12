@@ -5,14 +5,16 @@ import { useSound } from '../context/SoundContext';
 import { useHaptics } from '../context/HapticContext';
 
 export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
-  const { play, isMuted } = useSound();
+  const { play, isMuted, isUnlocked } = useSound();
   const { trigger } = useHaptics();
   const ambientRef = useRef(null);
 
   useEffect(() => {
+    if (!isUnlocked) return;
+
     if (currentScroll >= threshold && !isMuted) {
       if (!ambientRef.current) {
-        ambientRef.current = play('SWOOSH_CINEMATIC', { loop: true, volume: 0.1, pitch: 0.3 });
+        ambientRef.current = play('END_CREDITS', { loop: true, volume: 0.2, pitch: 0.8, clone: false });
       }
     } else {
       if (ambientRef.current) {
@@ -26,7 +28,7 @@ export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
         ambientRef.current.pause();
       }
     }
-  }, [currentScroll, threshold, isMuted, play]);
+  }, [currentScroll, threshold, isMuted, play, isUnlocked]);
 
   return (
     <section className={cn(
