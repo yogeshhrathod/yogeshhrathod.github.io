@@ -46,7 +46,7 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
                </p>
                {proj.github && (
                  <div className="mt-12 minimal-body text-[10px] border border-white/30 px-6 py-3 group-hover:bg-molten-red group-hover:border-molten-red transition-all duration-300 inline-block group-hover:text-white font-bold">
-                   ACCESS_SECURE_LINK
+                   VIEW PROJECT
                  </div>
                )}
                <div className="w-full h-[1px] bg-white/20 mt-24 blur-[1px]"></div>

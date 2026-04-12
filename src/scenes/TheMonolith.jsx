@@ -142,8 +142,8 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
 
           <div className="w-1.5 h-1.5 rounded-full bg-molten-red relative z-10" />
           <div className="flex flex-col items-start leading-tight relative z-10">
-            <span className="tracking-[0.2rem]">ACCESS_OLD_WAY</span>
-            <span className="text-[6px] opacity-40 group-hover:opacity-100 tracking-normal normal-case transition-opacity">For fast reading</span>
+            <span className="tracking-[0.2rem]">RESUME / PDF</span>
+            <span className="text-[6px] opacity-40 group-hover:opacity-100 tracking-normal normal-case transition-opacity">Just the facts</span>
           </div>
 
           {/* Selection Flash */}
@@ -177,19 +177,23 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
              </motion.h1>
              
              {/* HOVER LAYER */}
-             <motion.h1 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 3.5 }}
-              className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none absolute inset-0 pointer-events-none transition-opacity duration-300"
-              style={{
-                opacity: flashlightOpacity,
-                clipPath: flashlightClipPath,
-                WebkitClipPath: flashlightClipPath,
-              }}
+             <motion.div
+               className="absolute inset-0 pointer-events-none"
+               style={{
+                 opacity: flashlightOpacity,
+                 clipPath: flashlightClipPath,
+                 WebkitClipPath: flashlightClipPath,
+               }}
              >
-               YOGESH<br/>RATHOD
-             </motion.h1>
+               <motion.h1 
+                initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
+                animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "1.2rem", scale: 1 }}
+                transition={{ duration: 3.5, ease: "easeOut" }}
+                className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none"
+               >
+                 YOGESH<br/>RATHOD
+               </motion.h1>
+             </motion.div>
            </div>
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
@@ -197,8 +201,8 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
             transition={{ duration: 1.5, delay: 2, ease: "easeOut" }}
             className="mt-12 flex flex-col items-center gap-6"
           >
-            <span className="minimal-body text-molten font-bold text-xl tracking-[1rem]">FULL STACK DEVELOPER</span>
-            <span className="minimal-body italic opacity-80">NODEJS / CLOUD ARCHITECT / BRUTALIST CODER</span>
+            <span className="minimal-body text-molten font-bold text-xl tracking-[1rem]">I BUILD COOL STUFF.</span>
+            <span className="minimal-body italic opacity-80">FULL STACK DEVELOPER / NODEJS / CLOUD ARCHITECT</span>
           </motion.div>
        </motion.div>
 

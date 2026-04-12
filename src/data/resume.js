@@ -78,24 +78,34 @@ export const dialogues = [
   { 
     trigger: [1000, 2000], 
     text: [
-      "THE ARCHIVE.", 
-      "WHERE THE ARCHITECTURE OF THOUGHT MEETS THE REALITY OF CODE.",
-      "WITNESS THE MANIFESTATION."
+      "SIMPLE.", 
+      "HERE ARE SOME OF MY PROJECTS.",
+      "STUFF I'VE BUILT TO SOLVE REAL PROBLEMS."
     ] 
   },
   { 
     trigger: [4000, 5000], 
     text: [
-      "THE ENGINE.", 
-      "PULSING WITH GIGABYTES. FORGED IN THE FIRES OF PRODUCTION.",
-      "THE INFRASTRUCTURE OF SCALE."
+      "THE WORK.", 
+      "REAL-WORLD IMPACT AT SCALE.",
+      "THE SYSTEMS I'VE SHIPPED AND TEAMS I'VE LED."
     ] 
   },
   { 
     trigger: [7000, 8000], 
     text: [
-      "THE FOUNDATION.", 
-      "WHERE THE JOURNEY BEGAN. WHERE THE LOGIC WAS FORGED.",
+      "THE ROOTS.", 
+      "WHERE I LEARNED THE CRAFT.",
+      "FROM FIRST LINES OF CODE TO ARCHITECTING SOLUTIONS."
     ] 
   },
 ];
+
+export const socials = {
+  linkedin: "https://www.linkedin.com/in/Rathod-Yogesh",
+  github: "https://github.com/yrathod33",
+  npm: "https://www.npmjs.com/~yogeshrathod",
+  vscode: "https://marketplace.visualstudio.com/publishers/yogeshhrathod",
+  email: "yrathod33@gmail.com",
+  phone: "+91 8698482662"
+};

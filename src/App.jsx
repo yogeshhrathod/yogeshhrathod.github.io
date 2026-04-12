@@ -17,6 +17,7 @@ import { TheInversion } from './scenes/TheInversion';
 import { useHandheldDrift } from './hooks/useHandheldDrift';
 import { useCameraTransform } from './hooks/useCameraTransform';
 import { CinematicLoader } from './components/CinematicLoader';
+import { AtmosphericMetadata } from './components/AtmosphericMetadata';
 
 export default function App() {
   const containerRef = useRef(null);
@@ -133,6 +134,7 @@ export default function App() {
           <div className="vignette" />
           <SubmergedParticles />
           <NarrativeInterlude scroll={currentScroll} ranges={DIALOGUE_RANGES} />
+          <AtmosphericMetadata isVisible={!isFastReadOpen} />
         
         <FastReadOverlay isOpen={isFastReadOpen} onClose={() => setIsFastReadOpen(false)} />
 

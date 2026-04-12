@@ -36,7 +36,7 @@ export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
       currentScroll >= threshold ? "bg-stark opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
     )}>
       <div className="text-obsidian text-center px-6 md:px-12 w-full max-w-5xl">
-        <h2 className="titan-title text-[10vw] md:text-[8vw] tracking-[-0.2rem] md:tracking-[-0.5rem] italic text-shadow-none leading-[0.8]">ESTABLISH<br/>CONTACT</h2>
+        <h2 className="titan-title text-[10vw] md:text-[8vw] tracking-[-0.2rem] md:tracking-[-0.5rem] italic text-shadow-none leading-[0.8]">LET'S<br/>TALK.</h2>
         
         <div className="mt-12 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 border-y border-obsidian/10 py-8 md:py-12">
            <div className="flex flex-col gap-2">
@@ -88,7 +88,7 @@ export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
             <Terminal className="w-4 h-4 text-obsidian" strokeWidth={1.5} />
           </div>
           <p className="text-[8px] font-mono text-obsidian/40 max-w-xs">
-            ARCHITECTING IMMOVABLE OBJECTS SINCE 2016.
+            BUILDING COOL STUFF SINCE 2016.
           </p>
         </div>
         <div className="flex gap-12">
@@ -112,6 +112,26 @@ export const TheInversion = ({ currentScroll, threshold = 11000 }) => {
             }}
             className="minimal-body text-obsidian hover:text-molten"
            >GITHUB</a>
+           <a 
+            href="https://www.npmjs.com/~yogeshrathod" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onMouseEnter={() => {
+              play('HOVER_PHYSICAL', { volume: 0.1 });
+              trigger('light');
+            }}
+            className="minimal-body text-obsidian hover:text-molten"
+           >NPM</a>
+           <a 
+            href="https://marketplace.visualstudio.com/publishers/yogeshhrathod" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            onMouseEnter={() => {
+              play('HOVER_PHYSICAL', { volume: 0.1 });
+              trigger('light');
+            }}
+            className="minimal-body text-obsidian hover:text-molten"
+           >VSCODE</a>
            <a 
             href="mailto:yrathod33@gmail.com" 
             onMouseEnter={() => {
