@@ -9,7 +9,7 @@ export const TheEngine = ({ currentScroll, lerpedScroll, range = [12000, 15000] 
   const { play } = useSound();
   return (
     <section className={cn(
-      "absolute inset-0 flex items-center justify-center transition-opacity duration-1000 px-24",
+      "absolute inset-0 flex items-center justify-center transition-opacity duration-1000 px-6 md:px-24",
       currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none hidden"
     )}>
       {/* MASSIVE SECTION HEADER */}
@@ -27,7 +27,7 @@ export const TheEngine = ({ currentScroll, lerpedScroll, range = [12000, 15000] 
             >
               <div className="flex flex-col">
                 <span className="minimal-body text-molten-red font-bold text-xs mb-2 tracking-widest">{exp.period}</span>
-                <h4 className="titan-title text-6xl italic leading-tight">{exp.company}</h4>
+                <h4 className="titan-title text-4xl md:text-6xl italic leading-tight">{exp.company}</h4>
                 <p className="minimal-body mt-2 group-hover:text-stark">{exp.role}</p>
               </div>
               <div className="max-w-md mt-6 md:mt-0">

@@ -13,7 +13,7 @@ export const TheFoundation = ({ currentScroll, lerpedScroll, range = [19000, 220
   // Scenery transforms
   const opacity = useTransform(lerpedScroll, [start, start + 300, end - 300, end], [0, 1, 1, 0]);
   const scale = useTransform(lerpedScroll, [start, end], [1.05, 0.95]);
-  const yOffset = useTransform(lerpedScroll, [start, end], [50, -50]);
+  const yOffset = useTransform(lerpedScroll, [start, end], [150, -450]);
   const blur = useTransform(lerpedScroll, [start, start + 500, end - 500, end], [10, 0, 0, 10]);
 
   // Content layers
@@ -44,7 +44,7 @@ export const TheFoundation = ({ currentScroll, lerpedScroll, range = [19000, 220
 
       <motion.div 
         style={{ y: yOffset }}
-        className="relative z-10 w-full max-w-6xl px-8 flex flex-col gap-40 pt-20"
+        className="relative z-10 w-full max-w-6xl px-4 md:px-8 flex flex-col gap-24 md:gap-40 pt-10 md:pt-20"
       >
         {/* 1. ACADEMIC BLOCK - Museum Style */}
         <motion.div 
@@ -56,9 +56,9 @@ export const TheFoundation = ({ currentScroll, lerpedScroll, range = [19000, 220
           </div>
 
           {education.map((edu, idx) => (
-            <div key={idx} className="flex flex-col md:flex-row gap-8 items-start">
-               <div className="flex flex-col gap-2 min-w-[300px]">
-                  <h3 className="text-4xl md:text-5xl font-black italic tracking-tighter leading-[0.85] uppercase text-white group-hover/section:text-molten-red transition-colors duration-700">
+            <div key={idx} className="flex flex-col md:flex-row gap-4 md:gap-8 items-start w-full">
+               <div className="flex flex-col gap-2 w-full md:min-w-[300px]">
+                  <h3 className="text-2xl md:text-5xl font-black italic tracking-tighter leading-[0.85] uppercase text-white group-hover/section:text-molten-red transition-colors duration-700 break-words">
                     {edu.institute}
                   </h3>
                   <div className="flex items-center gap-4 mt-2">
@@ -94,7 +94,7 @@ export const TheFoundation = ({ currentScroll, lerpedScroll, range = [19000, 220
             <div className="flex-grow h-[1px] bg-gradient-to-l from-molten-red/40 to-transparent" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {achievements.map((ach, i) => (
               <div 
                 key={i}

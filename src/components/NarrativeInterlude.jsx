@@ -13,7 +13,7 @@ const TypewriterLine = ({ line, progress, showCursor }) => {
   const hidden = line.slice(charsRevealed);
 
   return (
-    <div className="text-center font-mono text-[2.2vw] leading-[1.6] tracking-[0.1rem] uppercase max-w-5xl mx-auto px-4 relative">
+    <div className="text-center font-mono text-[5vw] md:text-[2.2vw] leading-[1.6] tracking-[0.1rem] uppercase max-w-5xl mx-auto px-4 relative">
       <span className="text-stark whitespace-pre-wrap">{revealed}</span>
       {showCursor && (
         <motion.span 

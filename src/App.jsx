@@ -87,22 +87,20 @@ export default function App() {
   }, [isFastReadOpen, lenis]);
 
   // Define dynamic ranges for dialogues (The gaps between scenes)
-  // SIGNIFICANTLY INCREASED RANGES FOR READ TIME
   const DIALOGUE_RANGES = [
-    [vH * 1.5, vH * 5.5], // Gap 1: Projects teaser
-    [vH * 12.5, vH * 15.5], // Gap 2: Experience teaser
-    [vH * 19.5, vH * 22.5], // Gap 3: Education teaser
-    [vH * 26.0, vH * 27.4], // Gap 4: Contact teaser
+    [vH * 1.3, vH * 2.8],
+    [vH * 6.5, vH * 8.0],
+    [vH * 11.2, vH * 12.5],
+    [vH * 15.2, vH * 16.5],
   ];
 
   // Define dynamic ranges for scenes (Ensure no overlap)
-  // Extended ranges to give "Time to read" (Rule: Tectonic Scale)
   const RANGES = {
-    START: [0, vH * 1.5],
-    PROJECTS: [vH * 6.0, vH * 12.0], // DOUBLED ROAD (6.0 vH)
-    EXPERIENCE: [vH * 16.0, vH * 19.0],
-    FOUNDATION: [vH * 23.0, vH * 26.0],
-    CONTACT: [vH * 27.5, vH * 29.0],
+    START: [0, vH * 1.1],
+    PROJECTS: [vH * 3.0, vH * 6.2],
+    EXPERIENCE: [vH * 8.5, vH * 11.0],
+    FOUNDATION: [vH * 13.0, vH * 15.0],
+    CONTACT: [vH * 17.0, vH * 19.0],
   };
 
   const cameraTransform = useCameraTransform(xPercent, yPercent, drift, scrollY);
@@ -162,7 +160,7 @@ export default function App() {
 
         {/* Progress HUD */}
         <div className={cn(
-          "fixed right-12 top-1/2 -translate-y-1/2 flex flex-col gap-8 z-50 mix-blend-difference transition-opacity duration-500",
+          "hidden md:flex fixed right-12 top-1/2 -translate-y-1/2 flex-col gap-8 z-50 mix-blend-difference transition-opacity duration-500",
           isFastReadOpen ? "opacity-0 pointer-events-none" : "opacity-100"
         )}>
            {[

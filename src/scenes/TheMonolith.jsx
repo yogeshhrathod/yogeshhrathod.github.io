@@ -81,7 +81,7 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
             play('HOVER_PHYSICAL', { volume: 0.1, pitch: 1.5 });
             trigger('light');
          }}
-         className="fixed top-12 right-12 px-8 py-3 border border-white/5 bg-white/5 backdrop-blur-xl rounded-full minimal-body text-[10px] text-stark/60 hover:text-white transition-all pointer-events-auto z-[300] group flex items-center gap-4 cursor-pointer overflow-hidden"
+         className="fixed top-4 right-4 md:top-12 md:right-12 px-4 md:px-8 py-2 md:py-3 border border-white/5 bg-white/5 backdrop-blur-xl rounded-full minimal-body text-[10px] text-stark/60 hover:text-white transition-all pointer-events-auto z-[300] group flex items-center gap-4 cursor-pointer overflow-hidden"
        >
           {/* High Speed Lens Flare Sweep - Desaturated */}
           <motion.div 
@@ -121,10 +121,10 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
              onMouseLeave={() => flashlightOpacity.set(0)}
            >
              <motion.h1 
-              initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
-              animate={{ filter: "blur(0px)", opacity: 0.4, letterSpacing: "1.2rem", scale: 1 }}
+              initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "2vw", scale: 0.8 }}
+              animate={{ filter: "blur(0px)", opacity: 0.4, letterSpacing: "0.2em", scale: 1 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
-              className="titan-title text-[15vw] text-stark leading-none text-center select-none drop-shadow-[0_4px_16px_rgba(232,228,223,0.25)]"
+              className="titan-title text-[14vw] md:text-[15vw] text-stark leading-none text-center select-none drop-shadow-[0_4px_16px_rgba(232,228,223,0.25)]"
              >
                YOGESH<br/>RATHOD
              </motion.h1>
@@ -139,10 +139,10 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
                }}
              >
                <motion.h1 
-                initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "6rem", scale: 0.8 }}
-                animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "1.2rem", scale: 1 }}
+                initial={{ filter: "blur(30px)", opacity: 0, letterSpacing: "2vw", scale: 0.8 }}
+                animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "0.2em", scale: 1 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className="titan-title text-[15vw] metallic-chrome leading-none text-center select-none volumetric-glow drop-shadow-[0_0_40px_rgba(255,255,255,0.4)]"
+                className="titan-title text-[14vw] md:text-[15vw] metallic-chrome leading-none text-center select-none volumetric-glow drop-shadow-[0_0_40px_rgba(255,255,255,0.4)]"
                >
                  YOGESH<br/>RATHOD
                </motion.h1>
@@ -152,10 +152,10 @@ export const TheMonolith = ({ currentScroll, lerpedScroll, range = [0, 1000], on
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, delay: 2, ease: "easeOut" }}
-            className="mt-12 flex flex-col items-center gap-6"
+            className="mt-8 md:mt-12 flex flex-col items-center gap-4 md:gap-6 px-4 text-center"
           >
-            <span className="minimal-body text-molten font-bold text-xl tracking-[1rem]">I BUILD AGENTIC SYSTEMS.</span>
-            <span className="minimal-body italic opacity-80">AI ORCHESTRATOR / FULL STACK ARCHITECT / AGENTIC CODER</span>
+            <span className="minimal-body text-molten font-bold text-sm md:text-xl tracking-[0.5rem] md:tracking-[1rem]">I BUILD LUNA_ & AGENTIC SYSTEMS.</span>
+            <span className="minimal-body italic opacity-80 text-[10px] md:text-sm">PRINCIPAL ARCHITECT / FULL STACK LEAD / AGENTIC CODER</span>
           </motion.div>
        </motion.div>
 

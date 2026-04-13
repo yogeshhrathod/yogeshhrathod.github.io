@@ -1,14 +1,14 @@
 export const projects = [
   { 
-    title: "AGENTIC_CORE", 
-    desc: "Autonomous AI Orchestration. Building goal-oriented agents that think, plan, and execute. The future of software is agentic.", 
-    date: "2024 - BEYOND", 
-  },
-  { 
     title: "LUNA_", 
     desc: "Next-Gen Intelligent Interface. Heavy data orchestration and seamless user experiences. Manifested for the modern web.", 
     date: "2024 - PRESENT", 
     github: "https://luna.wesparkvault.com/" 
+  },
+  { 
+    title: "AGENTIC_CORE", 
+    desc: "Autonomous AI Orchestration. Building goal-oriented agents that think, plan, and execute. The future of software is agentic.", 
+    date: "2024 - BEYOND", 
   },
   { 
     title: "AIS", 
@@ -91,7 +91,7 @@ export const dialogues = [
   { 
     trigger: [4000, 5000], 
     text: [
-      "THE WORK.", 
+      "AHHHHH... THAT'S LUNA.", 
       "REAL-WORLD IMPACT AT SCALE.",
       "THE SYSTEMS I'VE SHIPPED AND TEAMS I'VE LED."
     ] 

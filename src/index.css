@@ -102,9 +102,14 @@
   .titan-title {
     font-weight: 900;
     font-style: italic;
-    letter-spacing: 0.8rem;
+    letter-spacing: 0.2rem;
     line-height: 0.9;
     text-transform: uppercase;
+  }
+  @media (min-width: 768px) {
+    .titan-title {
+      letter-spacing: 0.8rem;
+    }
   }
 
   .titan-subtitle {

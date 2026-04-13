@@ -1,7 +1,9 @@
 {
-  "name": "portfolio-2026",
+  "name": "yogesh-rathod-portfolio",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Portfolio of Yogesh Rathod",
+  "author": "Yogesh Rathod",
   "type": "module",
   "scripts": {
     "dev": "vite",

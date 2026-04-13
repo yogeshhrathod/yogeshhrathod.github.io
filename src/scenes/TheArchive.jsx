@@ -10,12 +10,12 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
   const [start, end] = range;
   const { play } = useSound();
   const { trigger } = useHaptics();
-  const scrollY = useTransform(lerpedScroll, [start, end], [0, -3000]); // Start from middle (0)
+  const scrollY = useTransform(lerpedScroll, [start, end], [0, -3500]); // Start from top
   const scrollZ = useTransform(lerpedScroll, [start, end], [0, 100]);
 
   return (
     <section className={cn(
-      "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 px-12 perspective-[2000px] overflow-hidden",
+      "absolute inset-0 flex flex-col items-center justify-start pt-[50vh] transition-opacity duration-1000 px-4 md:px-12 perspective-[2000px] overflow-hidden",
       currentScroll >= start && currentScroll < end ? "opacity-100 pointer-events-auto flex" : "opacity-0 pointer-events-none hidden"
     )}>
       {/* MASSIVE SECTION HEADER */}
@@ -25,7 +25,7 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
 
       
       <motion.div 
-        className="w-full max-w-5xl flex flex-col items-center gap-64 preserve-3d"
+        className="w-full max-w-5xl flex flex-col items-center gap-32 md:gap-64 preserve-3d"
         style={{
            y: scrollY,
            translateZ: scrollZ
@@ -40,7 +40,7 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
             <div key={i} className="flex flex-col items-center text-center">
                <div className="minimal-body text-[12px] opacity-50 mb-6 tracking-[0.5rem]">{proj.date}</div>
                <h3 className={cn(
-                 "titan-title text-6xl md:text-8xl transition-all duration-500",
+                 "titan-title text-4xl md:text-8xl transition-all duration-500",
                  proj.github ? "group-hover:text-molten-red group-hover:scale-105" : ""
                )}>
                  {proj.title}
@@ -62,8 +62,8 @@ export const TheArchive = ({ currentScroll, lerpedScroll, range = [2500, 4500] }
               key={i}
               initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
               whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              viewport={{ margin: "-20%" }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              viewport={{ margin: "0px", amount: 0.1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               className="w-full flex justify-center"
             >
               {proj.github ? (

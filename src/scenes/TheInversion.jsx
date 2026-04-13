@@ -68,8 +68,8 @@ export const TheInversion = ({ currentScroll, lerpedScroll, threshold = 11000 })
         </div>
       </div>
       
-      <footer className="absolute bottom-12 w-full px-12 flex justify-between items-end">
-        <div className="flex flex-col gap-2">
+      <footer className="absolute bottom-6 md:bottom-12 w-full px-6 md:px-12 flex flex-col md:flex-row justify-center md:justify-between items-center md:items-end gap-6 md:gap-0 text-center md:text-left">
+        <div className="flex flex-col gap-2 items-center md:items-start">
           <div className="flex items-center gap-2">
             <Terminal className="w-4 h-4 text-obsidian" strokeWidth={1.5} />
           </div>
@@ -77,7 +77,7 @@ export const TheInversion = ({ currentScroll, lerpedScroll, threshold = 11000 })
             BUILDING COOL STUFF SINCE 2016.
           </p>
         </div>
-        <div className="flex gap-12">
+        <div className="flex flex-wrap gap-6 md:gap-12 justify-center">
            <a 
             href="https://www.linkedin.com/in/Rathod-Yogesh" 
             target="_blank" 
