@@ -65,16 +65,14 @@ export const TheFoundation = ({ progress, range }) => (
           {achievements.map((ach) => (
             <div
               key={ach.title}
-              className="relative p-8 md:p-10 bg-obsidian border border-white/5 hover:border-white/20 transition-colors duration-700 group flex flex-col gap-5"
+              className="relative pt-6 group flex flex-col gap-4"
             >
+              <span className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-molten-red/60 via-white/15 to-transparent" aria-hidden="true" />
               <span className="minimal-body text-[10px] text-molten-red opacity-100 font-bold tracking-[0.3rem]">{ach.place}</span>
               <h4 className="text-2xl font-black italic tracking-tighter uppercase leading-none">{ach.title}</h4>
               <p className="text-sm font-light leading-relaxed text-white/50 group-hover:text-white/80 transition-colors duration-500">
                 {ach.desc}
               </p>
-              <div className="mt-auto pt-4 border-t border-white/5 flex justify-end">
-                <div className="w-1.5 h-1.5 rounded-full bg-molten-red/30 group-hover:bg-molten-red group-hover:shadow-[0_0_10px_#ff3300] transition-all" />
-              </div>
             </div>
           ))}
         </div>

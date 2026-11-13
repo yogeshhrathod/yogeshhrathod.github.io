@@ -209,6 +209,16 @@
     mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%);
   }
 
+  /* An image with no edges: it fades out toward all four sides */
+  .edge-fade {
+    --fade-x: linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+    --fade-y: linear-gradient(to bottom, transparent 0%, #000 22%, #000 72%, transparent 100%);
+    -webkit-mask-image: var(--fade-x), var(--fade-y);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--fade-x), var(--fade-y);
+    mask-composite: intersect;
+  }
+
   .thin-border {
     border: 1px solid rgba(232, 228, 223, 0.1);
   }

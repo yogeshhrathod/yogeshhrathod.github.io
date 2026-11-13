@@ -19,13 +19,14 @@ export const TheArchive = ({ progress, range }) => {
             <h3 className="titan-title text-3xl md:text-6xl text-balance">{proj.title}</h3>
             <p className="minimal-body mt-4 text-molten-red opacity-100 font-bold">{proj.subtitle}</p>
             {proj.preview && (
+              // No frame: the image dissolves into the dark on every side.
               <img
                 src={proj.preview.src}
                 alt={proj.preview.alt}
                 width="1040"
                 height="650"
                 decoding="async"
-                className="mt-8 w-full max-w-xl aspect-[16/10] object-cover object-top border border-white/15 bg-obsidian"
+                className="edge-fade mt-2 -mb-4 md:-mb-8 w-full max-w-3xl aspect-[16/10] object-cover object-top opacity-90"
               />
             )}
             <p className="mt-7 text-sm md:text-base max-w-2xl text-stark/75 leading-relaxed font-mono text-pretty">
