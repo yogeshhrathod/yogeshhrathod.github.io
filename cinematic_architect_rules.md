@@ -10,31 +10,30 @@ The project is structured into logical "Shots" and "Orchestration" layers:
 - `src/components/`: Reusable atmospheric elements (e.g., `SubmergedParticles`, `VolumetricDialogue`).
 - `src/hooks/`: Reusable camera and interaction logic (e.g., `useCameraTransform`).
 - `src/data/`: Centralized content repository (`resume.js`).
-- `src/App.jsx`: The "Director's Monitor". It manages the global camera, scroll lerping, and scene mounting.
+- `src/Stage.jsx`: The "Director's Monitor". It manages the global camera, the scroll `progress` value, and scene mounting. `src/App.jsx` only sequences the loader and the stage.
 
 ## 2. Adding a New Scene (Shot)
 
 To add a new scene:
 1. Create a new component in `src/scenes/` (e.g., `TheExperiment.jsx`).
 2. Use the `cn` utility for conditional styles.
-3. Use `currentScroll` to determine visibility and `lerpedScroll` for fine-grained motion.
-4. Mount the scene in `App.jsx` within the fixed camera viewport.
+3. Add its range to `src/timeline.js` and drive visibility and motion from `progress`.
+4. Mount the scene in `Stage.jsx` within the fixed camera viewport.
 
 ### Scene Template:
 ```jsx
-export const TheNewShot = ({ currentScroll, lerpedScroll }) => {
-  const isActive = currentScroll >= START_VAL && currentScroll < END_VAL;
-  
+export const TheNewShot = ({ progress, range }) => {
+  // opacity / visibility / pointer-events as MotionValues: no re-renders on scroll
+  const sceneStyle = useSceneStyle(progress, range);
+
   return (
-    <section className={cn(
-      "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000",
-      isActive ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-    )}>
+    <motion.section style={sceneStyle} className="absolute inset-0 flex flex-col items-center justify-center">
       {/* Content here */}
-    </section>
+    </motion.section>
   );
 };
 ```
+For a shot whose content is taller than the frame, wrap it in `<ScrollTrack>` instead: it pans the content across `range` using its measured height.
 
 ## 3. The Cinematic Code (Atmospheric Mandates)
 
@@ -47,12 +46,12 @@ export const TheNewShot = ({ currentScroll, lerpedScroll }) => {
 
 ## 4. Orchestration
 
-- `currentScroll`: Use this for "On/Off" logic (showing/hiding sections).
-- `lerpedScroll`: Use this for "Motion" logic (scenery movement, scaling, rotation).
+- `progress`: the single scroll MotionValue, measured in viewport-heights (`scrollY / vh`). Derive everything from it with `useTransform`; never copy scroll into React state.
+- `src/timeline.js`: the one table of scene ranges, dialogue gaps and total length. Sound cues and the Progress HUD read from it too, so add new shots there first.
 - ALWAYS check `src/data/resume.js` before hardcoding content.
 
 ## 5. Development Workflow
 
 - When asked to "add a feature", identify if it's a new global **Component** or a new narrative **Scene**.
-- If adding a scene, update the Progress HUD in `App.jsx` to reflect the new sequence.
-- Maintain the "Director's Monitor" (App.jsx) as a lean orchestrator.
+- If adding a scene, update the Progress HUD in `Stage.jsx` to reflect the new sequence.
+- Maintain the "Director's Monitor" (Stage.jsx) as a lean orchestrator.

@@ -1,101 +1,78 @@
 import { useEffect, useRef } from 'react';
+import { useMotionValueEvent } from 'framer-motion';
 import { useSound } from '../context/SoundContext';
 import { useHaptics } from '../context/HapticContext';
+import { SCENES, FADE } from '../timeline';
 
-export const useCinematicScript = (currentScroll, vH) => {
+// THE CINEMATIC AUDIO & HAPTIC SCRIPT
+// Cue points are in the same vh units as the scene timeline, so a sound can
+// never drift away from the picture it belongs to.
+const TRIGGERS = [
+  { id: 'intro_drone', at: 0.03, sound: 'INTRO_REVEAL', volume: 0.5 },
+  { id: 'name_zoom_woosh', at: 0.3, sound: 'NAME_ZOOM', volume: 0.4, pitch: 0.85, haptic: 'medium' },
+  { id: 'thud_projects', at: SCENES.PROJECTS[0] + FADE / 2, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+  { id: 'thud_experience', at: SCENES.EXPERIENCE[0] + FADE / 2, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+  { id: 'thud_foundation', at: SCENES.FOUNDATION[0] + FADE / 2, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+  { id: 'thud_contact', at: SCENES.CONTACT[0] + FADE / 2, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
+];
+
+const AMBIENTS = [
+  { id: 'contact_ambient', range: [SCENES.CONTACT[0], Infinity], sound: 'END_CREDITS', volume: 0.2, pitch: 0.8 },
+];
+
+export const useCinematicScript = (progress) => {
   const { play, isMuted, isUnlocked } = useSound();
   const { trigger } = useHaptics();
-  
-  const playedTriggers = useRef(new Set());
-  const activeAmbients = useRef(new Set());
-  const ambientRefs = useRef({});
-  const prevScroll = useRef(0);
 
-  useEffect(() => {
-    if (!isUnlocked || isMuted || !vH) {
-      prevScroll.current = currentScroll;
-      return;
-    }
+  const played = useRef(new Set());
+  const ambients = useRef({});
+  const prev = useRef(progress.get());
+  const live = isUnlocked && !isMuted;
 
-    const isScrollingDown = currentScroll > prevScroll.current;
+  const stopAmbient = (id) => {
+    ambients.current[id]?.pause();
+    delete ambients.current[id];
+  };
 
-    // THE CINEMATIC AUDIO & HAPTIC SCRIPT
-    // This defines the exact orchestration of sound and feeling as the user scrolls.
-    const SCRIPT = [
-      {
-        act: 'ACT I: THE MONOLITH',
-        events: [
-          { id: 'intro_drone', type: 'trigger', triggerAt: 50, sound: 'INTRO_REVEAL', volume: 0.5, haptic: null },
-          // The "Name Zoom" woosh.
-          { id: 'name_zoom_woosh', type: 'trigger', triggerAt: vH * 0.3, sound: 'NAME_ZOOM', volume: 0.4, pitch: 0.85, haptic: 'medium' },
-          { id: 'thud_projects', type: 'trigger', triggerAt: vH * 5.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
-        ]
-      },
-      {
-        act: 'ACT II: THE ARCHIVE',
-        events: [
-          { id: 'thud_experience', type: 'trigger', triggerAt: vH * 15.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
-        ]
-      },
-      {
-        act: 'ACT III: THE ENGINE',
-        events: [
-          { id: 'thud_foundation', type: 'trigger', triggerAt: vH * 22.9, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
-        ]
-      },
-      {
-        act: 'ACT IV: THE INVERSION',
-        events: [
-          { id: 'thud_contact', type: 'trigger', triggerAt: vH * 27.4, sound: 'HEAVY_THUD', volume: 0.05, haptic: 'heavy' },
-          { id: 'contact_ambient', type: 'ambient', range: [vH * 27.0, vH * 32.0], sound: 'END_CREDITS', volume: 0.2, pitch: 0.8 },
-        ]
+  const evaluate = (p) => {
+    const before = prev.current;
+    prev.current = p;
+    if (!live) return;
+
+    TRIGGERS.forEach((cue) => {
+      // Fire once when scrolling DOWN across the cue; re-arm only at the very top
+      // so small back-and-forth scrolling never machine-guns the sound.
+      if (before < cue.at && p >= cue.at && !played.current.has(cue.id)) {
+        if (cue.sound) play(cue.sound, { volume: cue.volume, pitch: cue.pitch || 1 });
+        if (cue.haptic) trigger(cue.haptic);
+        played.current.add(cue.id);
       }
-    ];
-
-    // Evaluate Script Events
-    SCRIPT.forEach(scene => {
-      scene.events.forEach(event => {
-        
-        // Handle One-Shot Triggers
-        if (event.type === 'trigger') {
-          // Trigger when scrolling DOWN past the point
-          if (isScrollingDown && prevScroll.current < event.triggerAt && currentScroll >= event.triggerAt) {
-            if (!playedTriggers.current.has(event.id)) {
-              if (event.sound) play(event.sound, { volume: event.volume, pitch: event.pitch || 1 });
-              if (event.haptic) trigger(event.haptic);
-              playedTriggers.current.add(event.id);
-            }
-          }
-          
-          // Reset triggers only if the user scrolls all the way back to the top
-          // This prevents 'glitchy' re-triggering if the user repeatedly scrolls slightly up and down
-          if (currentScroll <= 10) {
-            playedTriggers.current.delete(event.id);
-          }
-        }
-
-        // Handle Ambient / Loop sounds
-        if (event.type === 'ambient') {
-          const [start, end] = event.range;
-          const inRange = currentScroll >= start && currentScroll <= end;
-          const isActive = activeAmbients.current.has(event.id);
-
-          if (inRange && !isActive) {
-            // Enter Ambient Zone
-            ambientRefs.current[event.id] = play(event.sound, { loop: true, volume: event.volume, pitch: event.pitch || 1, clone: false });
-            activeAmbients.current.add(event.id);
-          } else if (!inRange && isActive) {
-            // Leave Ambient Zone
-            if (ambientRefs.current[event.id]) {
-              ambientRefs.current[event.id].pause();
-              ambientRefs.current[event.id] = null;
-            }
-            activeAmbients.current.delete(event.id);
-          }
-        }
-      });
     });
+    if (p <= 0.01) played.current.clear();
 
-    prevScroll.current = currentScroll;
-  }, [currentScroll, isMuted, isUnlocked, play, trigger, vH]);
+    AMBIENTS.forEach((amb) => {
+      const inRange = p >= amb.range[0] && p <= amb.range[1];
+      const isActive = Boolean(ambients.current[amb.id]);
+      if (inRange && !isActive) {
+        ambients.current[amb.id] = play(amb.sound, { loop: true, volume: amb.volume, pitch: amb.pitch || 1, clone: false });
+      } else if (!inRange && isActive) {
+        stopAmbient(amb.id);
+      }
+    });
+  };
+
+  useMotionValueEvent(progress, 'change', evaluate);
+
+  // Muting must silence loops that are already playing; unmuting inside an
+  // ambient zone must bring them back without waiting for the next scroll.
+  useEffect(() => {
+    if (!live) {
+      Object.keys(ambients.current).forEach(stopAmbient);
+    } else {
+      evaluate(progress.get());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live]);
+
+  useEffect(() => () => Object.keys(ambients.current).forEach(stopAmbient), []);
 };

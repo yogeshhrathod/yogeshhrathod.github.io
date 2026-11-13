@@ -1,55 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSound } from '../context/SoundContext';
-import { useHaptics } from '../context/HapticContext';
 
-export const CinematicLoader = ({ onEnter }) => {
+/**
+ * onEnter fires the moment the loader starts to leave, so the stage mounts
+ * underneath and the two cross-dissolve. onDone fires when the dissolve ends.
+ */
+export const CinematicLoader = ({ onEnter, onDone }) => {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
   const { play } = useSound();
 
+  // Latest callbacks without restarting the boot sequence when they change.
+  const latest = useRef({ onEnter, play });
   useEffect(() => {
-    let int;
+    latest.current = { onEnter, play };
+  });
+
+  useEffect(() => {
+    let interval;
+    let timeout;
+
     const bootSequence = () => {
       let currentProgress = 0;
-      int = setInterval(() => {
+      interval = setInterval(() => {
         // "Real" feeling variable load speeds
-        const increment = Math.random() * 20 + 5;
-        currentProgress += increment;
-        
-        if (currentProgress >= 100) {
-          currentProgress = 100;
-          clearInterval(int);
-          
-          // Drama pause before exit
-          setTimeout(() => {
-            setIsExiting(true);
-            play('HEAVY_THUD', { volume: 0.3 }); // Will only play if user naturally interacted earlier, or silent
-            setTimeout(() => onEnter(), 1000);
-          }, 600);
-        }
-        
+        currentProgress = Math.min(100, currentProgress + Math.random() * 20 + 5);
         setProgress(Math.floor(currentProgress));
-      }, 120);
+
+        if (currentProgress >= 100) {
+          clearInterval(interval);
+          // Drama pause before exit
+          timeout = setTimeout(() => {
+            latest.current.play('HEAVY_THUD', { volume: 0.3 });
+            setIsExiting(true);
+            latest.current.onEnter();
+          }, 450);
+        }
+      }, 110);
     };
 
-    // Fast track if document is already fully loaded and cached, but maintain cinematic minimum
     if (document.readyState === 'complete') {
-        bootSequence();
+      bootSequence();
     } else {
-        window.addEventListener('load', bootSequence);
-        return () => window.removeEventListener('load', bootSequence);
+      window.addEventListener('load', bootSequence, { once: true });
     }
 
-    return () => clearInterval(int);
-  }, [onEnter, play]);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+      window.removeEventListener('load', bootSequence);
+    };
+  }, []);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onDone}>
       {!isExiting && (
-        <motion.div 
-          exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
-          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+        <motion.div
+          exit={{ opacity: 0, scale: 1.04 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[99999] bg-obsidian flex flex-col items-center justify-center p-8 pointer-events-none"
         >
           {/* Atmospheric Haze */}
@@ -57,35 +66,27 @@ export const CinematicLoader = ({ onEnter }) => {
 
           <div className="flex flex-col items-center gap-4 w-full max-w-[200px] z-10">
             <div className="w-full flex justify-between text-[8px] font-mono text-stark/40 tracking-[0.4rem] uppercase">
-                <span>SYSTEM_BOOT</span>
-                <span>{progress === 100 ? 'OK' : `${progress}%`}</span>
-            </div>
-            
-            <div className="w-full h-[1px] bg-white/5 relative overflow-hidden">
-                <motion.div 
-                  className="absolute top-0 left-0 bottom-0 bg-stark/60"
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.15, ease: "linear" }}
-                />
+              <span>SYSTEM_BOOT</span>
+              <span>{progress === 100 ? 'OK' : `${progress}%`}</span>
             </div>
 
-            <div className="h-4 flex items-center justify-center w-full mt-2">
-               <motion.span 
-                 initial={{ opacity: 0 }}
-                 animate={{ opacity: progress === 100 ? 1 : 0 }}
-                 className="text-[7px] text-stark/30 font-mono tracking-[0.5rem] uppercase"
-               >
-                 INITIALIZATION_COMPLETE
-               </motion.span>
-               <motion.span 
-                 animate={{ opacity: [0, 1, 0] }}
-                 transition={{ repeat: Infinity, duration: 1 }}
-                 className="text-[7px] text-stark/30 font-mono tracking-[0.5rem] uppercase absolute"
-                 style={{ display: progress < 100 ? 'block' : 'none' }}
-               >
-                 AWAITING_DATA...
-               </motion.span>
+            <div className="w-full h-[1px] bg-white/5 relative overflow-hidden">
+              <motion.div
+                className="absolute inset-0 bg-stark/60 origin-left"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: progress / 100 }}
+                transition={{ duration: 0.15, ease: 'linear' }}
+              />
+            </div>
+
+            <div className="h-4 relative flex items-center justify-center w-full mt-2 text-[7px] text-stark/30 font-mono tracking-[0.5rem] uppercase whitespace-nowrap">
+              {progress === 100 ? (
+                <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>INITIALIZATION_COMPLETE</motion.span>
+              ) : (
+                <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1 }}>
+                  AWAITING_DATA...
+                </motion.span>
+              )}
             </div>
           </div>
         </motion.div>

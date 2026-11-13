@@ -24,7 +24,7 @@
   body {
     background-color: var(--charcoal);
     color: var(--stark);
-    overflow-x: hidden;
+    overflow-x: clip;
     margin: 0;
     font-family: var(--font-titan);
     -webkit-font-smoothing: antialiased;
@@ -42,7 +42,6 @@
     opacity: 0.03;
     z-index: 10000;
     pointer-events: none;
-    mix-blend-mode: overlay;
   }
 
   /* Scanlines Overlay */
@@ -202,6 +201,12 @@
     --infm: 0;
   }
 
+  /* Content of a panning scene dissolves at the top and bottom of the frame */
+  .scene-mask {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 80%, transparent 100%);
+  }
+
   .thin-border {
     border: 1px solid rgba(232, 228, 223, 0.1);
   }
@@ -275,4 +280,10 @@
   z-index: 99999;
   pointer-events: none;
   background: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metallic-chrome {
+    animation: none;
+  }
 }

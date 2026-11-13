@@ -26,15 +26,19 @@ export const SoundProvider = ({ children }) => {
   const unlockAudio = useCallback(() => {
     if (hasUnlockedReference.current) return;
     Object.values(audioCache.current).forEach(audio => {
+      // Prime each element silently so the unlock itself is never audible.
+      audio.muted = true;
       const p = audio.play();
-      if (p) p.then(() => {
+      const reset = () => {
         audio.pause();
         audio.currentTime = 0;
-      }).catch(() => {});
+        audio.muted = false;
+      };
+      if (p) p.then(reset).catch(() => { audio.muted = false; });
+      else reset();
     });
     hasUnlockedReference.current = true;
     setIsUnlocked(true);
-    console.log("Audio Context Unlocked");
   }, []);
 
   // Preload and Bind Global Activation
@@ -90,10 +94,9 @@ export const SoundProvider = ({ children }) => {
     audioInstance.loop = loop;
     audioInstance.playbackRate = pitch;
 
-    audioInstance.play().catch(e => {
-        // Silently catch autoplay/policy blocks
-        console.warn(`Audio play blocked for ${soundName}`);
-    });
+    audioInstance.muted = false;
+    // Silently ignore autoplay/policy blocks
+    audioInstance.play().catch(() => {});
 
     return audioInstance;
   }, [isMuted, masterVolume]);

@@ -1,15 +1,17 @@
 import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 
 /**
  * SubmergedParticles (Ubisoft Rule: < 0.1px per frame)
  * Provides a persistent low-opacity noise/dust overlay for atmospheric depth.
+ * `opacity` is a MotionValue; the loop idles while the layer is invisible.
  */
-export const SubmergedParticles = () => {
+export const SubmergedParticles = ({ opacity }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return undefined;
     const ctx = canvas.getContext('2d');
     let animationFrameId;
 
@@ -26,22 +28,24 @@ export const SubmergedParticles = () => {
     }));
 
     const render = () => {
+      animationFrameId = requestAnimationFrame(render);
+      if (opacity && opacity.get() <= 0.001) return;
+
       ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgb(232, 228, 223)';
       particles.forEach((p) => {
         p.x += p.speedX;
         p.y += p.speedY;
 
-        if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
         if (p.x < 0) p.x = width;
         if (p.x > width) p.x = 0;
 
-        ctx.fillStyle = `rgba(232, 228, 223, ${p.opacity})`;
+        ctx.globalAlpha = p.opacity;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
-      animationFrameId = requestAnimationFrame(render);
     };
 
     const handleResize = () => {
@@ -56,12 +60,13 @@ export const SubmergedParticles = () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [opacity]);
 
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed inset-0 pointer-events-none z-[10001] opacity-50 mix-blend-screen"
+    <motion.canvas
+      ref={canvasRef}
+      style={{ opacity }}
+      className="fixed inset-0 pointer-events-none z-[10001]"
     />
   );
 };
