@@ -1,0 +1,1 @@
+.qivi-stage{pointer-events:none;z-index:30;width:100vw;height:100vh;position:fixed;inset:0}.qivi-avatar{flex:none;display:inline-block;position:relative}.qivi-avatar.is-static{place-items:center;display:inline-grid}.qivi-avatar-canvas{pointer-events:none;z-index:1;position:absolute}
