@@ -12,6 +12,7 @@ export const profile = {
 export const projects = [
   {
     title: "HAPTIX",
+    preview: { src: "/previews/haptix.jpg", alt: "Haptix website showing the app playing a video with a haptic track" },
     name: "Haptix: Physical Feel",
     subtitle: "Physical Feel",
     date: "LIVE ON THE APP STORE · AUG 2026",
@@ -47,6 +48,7 @@ export const projects = [
   },
   {
     title: "QIVI",
+    preview: { src: "/previews/qivi.jpg", alt: "Qivi demo showing the particle avatar next to a chat panel" },
     name: "Qivi",
     subtitle: "GPU particle avatar for AI assistants",
     date: "OPEN SOURCE · NPM",
@@ -93,6 +95,7 @@ export const projects = [
   },
   {
     title: "LUNA_",
+    preview: { src: "/previews/luna.jpg", alt: "Luna website: the API client built for pure speed" },
     name: "Luna (Anayas 2.0)",
     subtitle: "Luna (Anayas 2.0)",
     date: "12 ALPHA BUILDS · MACOS / WINDOWS / LINUX",
@@ -108,6 +111,7 @@ export const projects = [
   },
   {
     title: "SCOOTY",
+    preview: { src: "/previews/scooty.jpg", alt: "Scooty website: the media player for cloud and FTP servers" },
     name: "Scooty",
     subtitle: "FTP / SFTP media player",
     date: "WEB · DESKTOP · IOS · ANDROID",

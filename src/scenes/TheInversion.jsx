@@ -37,19 +37,19 @@ export const TheInversion = ({ progress, range }) => {
 
         <div className="mt-10 md:mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 border-y border-obsidian/10 py-6 md:py-12">
           <div className="flex flex-col gap-2">
-            <span className="minimal-body text-obsidian font-bold">TERMINAL</span>
+            <span className="minimal-body text-obsidian font-bold">PHONE</span>
             <a href={socials.phoneHref} onMouseEnter={hover} className="text-xs md:text-sm font-mono hover:text-molten-red transition-colors">
               {socials.phone}
             </a>
           </div>
           <div className="flex flex-col gap-2 border-y md:border-y-0 md:border-x border-obsidian/10 py-6 md:py-0">
-            <span className="minimal-body text-obsidian font-bold">REPOSITORY</span>
+            <span className="minimal-body text-obsidian font-bold">EMAIL</span>
             <a href={`mailto:${socials.email}`} onMouseEnter={hover} className="text-xs md:text-sm font-mono hover:text-molten-red transition-colors">
               {socials.email}
             </a>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="minimal-body text-obsidian font-bold">STATION</span>
+            <span className="minimal-body text-obsidian font-bold">LOCATION</span>
             <p className="text-xs md:text-sm font-mono uppercase">{profile.location}</p>
           </div>
         </div>
@@ -65,12 +65,12 @@ export const TheInversion = ({ progress, range }) => {
           }}
         >
           <span className="uppercase tracking-[0.2rem] text-obsidian font-black text-xs md:text-lg underline decoration-molten-red decoration-4 underline-offset-8 group-hover:text-molten-red transition-colors">
-            DOWNLOAD_FULL_INTEL_REPORT (PDF)
+            DOWNLOAD RESUME (PDF)
           </span>
         </a>
       </div>
 
-      <footer className="absolute bottom-5 md:bottom-12 w-full pl-20 pr-6 md:pl-12 md:pr-36 flex flex-col md:flex-row justify-center md:justify-between items-center md:items-end gap-4 md:gap-0 text-center md:text-left">
+      <footer className="absolute bottom-5 md:bottom-12 w-full pl-20 pr-6 md:pl-12 md:pr-56 flex flex-col md:flex-row justify-center md:justify-between items-center md:items-end gap-4 md:gap-0 text-center md:text-left">
         <div className="hidden md:flex flex-col gap-2 items-start">
           <Terminal className="w-4 h-4 text-obsidian" strokeWidth={1.5} />
           <p className="text-[8px] font-mono text-obsidian/40 max-w-xs">BUILDING COOL STUFF SINCE 2016.</p>

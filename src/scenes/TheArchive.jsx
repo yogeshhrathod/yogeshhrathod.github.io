@@ -17,6 +17,16 @@ export const TheArchive = ({ progress, range }) => {
             <div className="minimal-body text-[10px] md:text-[12px] opacity-50 mb-5 tracking-[0.3rem] md:tracking-[0.5rem]">{proj.date}</div>
             <h3 className="titan-title text-3xl md:text-6xl text-balance">{proj.title}</h3>
             <p className="minimal-body mt-4 text-molten-red opacity-100 font-bold">{proj.subtitle}</p>
+            {proj.preview && (
+              <img
+                src={proj.preview.src}
+                alt={proj.preview.alt}
+                width="1040"
+                height="650"
+                decoding="async"
+                className="mt-8 w-full max-w-xl aspect-[16/10] object-cover object-top border border-white/15 bg-obsidian"
+              />
+            )}
             <p className="mt-7 text-sm md:text-base max-w-2xl text-stark/75 leading-relaxed font-mono text-pretty">
               {proj.desc}
             </p>

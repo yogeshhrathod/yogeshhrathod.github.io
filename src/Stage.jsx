@@ -71,6 +71,12 @@ export const Stage = () => {
   const [active, setActive] = useState(() => activeIndexAt(progress.get()));
   useMotionValueEvent(progress, 'change', (p) => setActive(activeIndexAt(p)));
 
+  const goTo = (target) => {
+    play('click');
+    trigger('selection');
+    lenis?.scrollTo(target * vH, { duration: 1.6 });
+  };
+
   const camera = useCameraTransform(progress);
   useCinematicScript(progress);
 
@@ -101,7 +107,7 @@ export const Stage = () => {
           )}
         >
           <motion.main style={camera} className="absolute inset-0 will-change-transform">
-            <TheMonolith progress={progress} range={SCENES.START} />
+            <TheMonolith progress={progress} range={SCENES.START} onSkip={() => goTo(NAV[1].target)} />
             <TheArchive progress={progress} range={SCENES.PROJECTS} />
             <TheEngine progress={progress} range={SCENES.EXPERIENCE} />
             <TheFoundation progress={progress} range={SCENES.FOUNDATION} />
@@ -143,7 +149,7 @@ export const Stage = () => {
         <nav
           aria-label="Sections"
           className={cn(
-            'hidden md:flex fixed right-12 top-1/2 -translate-y-1/2 flex-col gap-8 z-50 mix-blend-difference transition-opacity duration-500',
+            'flex fixed right-1.5 md:right-12 top-1/2 -translate-y-1/2 flex-col md:gap-8 z-50 mix-blend-difference transition-opacity duration-500',
             isFastReadOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
           )}
         >
@@ -154,22 +160,19 @@ export const Stage = () => {
                 key={item.label}
                 type="button"
                 aria-current={isActive ? 'true' : undefined}
-                className="flex items-center justify-end gap-4 group cursor-pointer"
-                onClick={() => {
-                  play('click');
-                  trigger('selection');
-                  lenis?.scrollTo(item.target * vH, { duration: 1.6 });
-                }}
+                aria-label={item.label}
+                className="flex items-center justify-end gap-4 group cursor-pointer py-3 pl-5 md:p-0"
+                onClick={() => goTo(item.target)}
               >
                 <span className={cn(
-                  'minimal-body text-[10px] tracking-[0.3rem] transition-all duration-300',
+                  'hidden md:inline minimal-body text-[10px] tracking-[0.3rem] transition-all duration-300',
                   isActive ? 'text-molten-red opacity-100' : 'text-stark opacity-20 group-hover:opacity-100'
                 )}>
                   {item.label}
                 </span>
                 <span className={cn(
-                  'h-px transition-all duration-300',
-                  isActive ? 'bg-molten-red w-24' : 'bg-white/20 w-4 group-hover:w-12'
+                  'h-0.5 md:h-px transition-all duration-300',
+                  isActive ? 'bg-molten-red w-3 md:w-24' : 'bg-white/40 md:bg-white/20 w-1.5 md:w-4 md:group-hover:w-12'
                 )} />
               </button>
             );

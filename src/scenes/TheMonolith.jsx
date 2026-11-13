@@ -12,7 +12,7 @@ const TITLE_INTRO = {
   transition: { duration: 1.4, ease: [0.22, 1, 0.36, 1] },
 };
 
-export const TheMonolith = ({ progress, range }) => {
+export const TheMonolith = ({ progress, range, onSkip }) => {
   const [start, end] = range;
   const span = end - start;
   const at = (t) => start + span * t;
@@ -56,7 +56,7 @@ export const TheMonolith = ({ progress, range }) => {
         >
           <motion.h1
             {...TITLE_INTRO}
-            animate={{ filter: 'blur(0px)', opacity: 0.4, scale: 1 }}
+            animate={{ filter: 'blur(0px)', opacity: 0.9, scale: 1 }}
             style={TITLE_STYLE}
             className={`${TITLE_CLASS} text-stark`}
           >
@@ -118,10 +118,17 @@ export const TheMonolith = ({ progress, range }) => {
           transition={{ delay: 2, duration: 1.2 }}
           className="flex flex-col items-center gap-2"
         >
-          <span className="minimal-body text-[9px] opacity-50 tracking-[0.4rem]">SCROLL</span>
+          <span className="minimal-body text-[9px] opacity-60 tracking-[0.4rem]">SCROLL</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}>
-            <ChevronDown className="w-4 h-4 text-stark/50" strokeWidth={1.5} />
+            <ChevronDown className="w-4 h-4 text-stark/60" strokeWidth={1.5} />
           </motion.div>
+          <button
+            type="button"
+            onClick={onSkip}
+            className="mt-2 minimal-body text-[9px] tracking-[0.3rem] text-stark opacity-60 hover:opacity-100 hover:text-molten-red underline underline-offset-4 decoration-white/30 cursor-pointer transition-colors"
+          >
+            OR SKIP TO PROJECTS
+          </button>
         </motion.div>
       </motion.div>
     </motion.section>
