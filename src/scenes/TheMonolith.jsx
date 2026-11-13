@@ -41,9 +41,6 @@ export const TheMonolith = ({ progress, range }) => {
     ([x, y]) => `circle(150px at ${x}px ${y}px)`
   );
 
-  const sonicOpacity = useTransform(progress, [at(0.6), at(0.72), at(0.86), at(0.98)], [0, 0.14, 0.14, 0]);
-  const sonicScale = useTransform(progress, [at(0.6), end], [0.9, 1.2]);
-
   return (
     <motion.section style={sceneStyle} className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
       <motion.div
@@ -126,21 +123,6 @@ export const TheMonolith = ({ progress, range }) => {
             <ChevronDown className="w-4 h-4 text-stark/50" strokeWidth={1.5} />
           </motion.div>
         </motion.div>
-      </motion.div>
-
-      {/* PROTAGONIST EXPRESSION: AHHHHH (SONIC REVEAL) */}
-      <motion.div
-        aria-hidden="true"
-        className="absolute inset-0 flex items-center justify-center pointer-events-none z-[150]"
-        style={{ opacity: sonicOpacity, scale: sonicScale }}
-      >
-        <span className="titan-title text-[18vw] text-molten-red whitespace-nowrap" style={TITLE_STYLE}>AHHHHH</span>
-        {/* Sonic Ripple */}
-        <motion.div
-          animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: 'easeOut' }}
-          className="absolute w-[50vw] h-[50vw] border border-molten-red/30 rounded-full"
-        />
       </motion.div>
     </motion.section>
   );

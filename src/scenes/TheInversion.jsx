@@ -22,9 +22,9 @@ export const TheInversion = ({ progress, range }) => {
   const sceneStyle = useSceneStyle(progress, range, { fade: 0.3, holdEnd: true });
   const scale = useTransform(progress, [start, start + 0.3], [0.95, 1]);
 
-  const hover = (sound = 'CLICK_MECHANICAL', haptic = 'light') => () => {
-    play(sound, { volume: 0.1 });
-    trigger(haptic);
+  const hover = () => {
+    play('hover');
+    trigger('light');
   };
 
   return (
@@ -38,13 +38,13 @@ export const TheInversion = ({ progress, range }) => {
         <div className="mt-10 md:mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 border-y border-obsidian/10 py-6 md:py-12">
           <div className="flex flex-col gap-2">
             <span className="minimal-body text-obsidian font-bold">TERMINAL</span>
-            <a href={socials.phoneHref} onMouseEnter={hover()} className="text-xs md:text-sm font-mono hover:text-molten-red transition-colors">
+            <a href={socials.phoneHref} onMouseEnter={hover} className="text-xs md:text-sm font-mono hover:text-molten-red transition-colors">
               {socials.phone}
             </a>
           </div>
           <div className="flex flex-col gap-2 border-y md:border-y-0 md:border-x border-obsidian/10 py-6 md:py-0">
             <span className="minimal-body text-obsidian font-bold">REPOSITORY</span>
-            <a href={`mailto:${socials.email}`} onMouseEnter={hover()} className="text-xs md:text-sm font-mono hover:text-molten-red transition-colors">
+            <a href={`mailto:${socials.email}`} onMouseEnter={hover} className="text-xs md:text-sm font-mono hover:text-molten-red transition-colors">
               {socials.email}
             </a>
           </div>
@@ -58,12 +58,9 @@ export const TheInversion = ({ progress, range }) => {
           href={profile.resumePdf}
           download
           className="mt-10 md:mt-12 inline-block group"
-          onMouseEnter={() => {
-            play('CLICK_MECHANICAL', { volume: 0.1, pitch: 0.8 });
-            trigger('medium');
-          }}
+          onMouseEnter={hover}
           onClick={() => {
-            play('SWOOSH_CINEMATIC', { volume: 0.3 });
+            play('click');
             trigger('heavy');
           }}
         >
@@ -85,7 +82,7 @@ export const TheInversion = ({ progress, range }) => {
               href={link.href}
               target={link.href.startsWith('mailto:') ? undefined : '_blank'}
               rel="noopener noreferrer"
-              onMouseEnter={hover('HOVER_PHYSICAL')}
+              onMouseEnter={hover}
               className="minimal-body text-obsidian hover:text-molten-red hover:opacity-100 transition-colors"
             >
               {link.label}

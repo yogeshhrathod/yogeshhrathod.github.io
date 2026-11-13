@@ -47,7 +47,7 @@ export const VolumetricDialogue = ({ lines, progress, range }) => {
     const now = performance.now();
     if (typedForward && now - lastSoundAt.current > 45) {
       lastSoundAt.current = now;
-      play('TYPEWRITER', { volume: 0.15, pitch: 0.9 + Math.random() * 0.2 });
+      play('key');
     }
   });
 

@@ -28,7 +28,7 @@ export const FastReadOverlay = ({ isOpen, onClose }) => {
   const { play } = useSound();
 
   const close = () => {
-    play('SWOOSH_CINEMATIC', { volume: 0.3, pitch: 0.8 });
+    play('whoosh');
     onClose();
   };
 

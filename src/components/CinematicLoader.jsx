@@ -32,7 +32,7 @@ export const CinematicLoader = ({ onEnter, onDone }) => {
           clearInterval(interval);
           // Drama pause before exit
           timeout = setTimeout(() => {
-            latest.current.play('HEAVY_THUD', { volume: 0.3 });
+            latest.current.play('impact');
             setIsExiting(true);
             latest.current.onEnter();
           }, 450);

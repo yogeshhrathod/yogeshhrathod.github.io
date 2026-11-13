@@ -33,7 +33,7 @@ export const TheArchive = ({ progress, range }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onMouseEnter={() => {
-                    play('HOVER_PHYSICAL', { volume: 0.1, pitch: 1.2 });
+                    play('hover');
                     trigger('light');
                   }}
                   className="minimal-body text-[10px] font-bold border border-white/30 px-5 py-3 inline-flex items-center gap-2 hover:bg-molten-red hover:border-molten-red hover:text-white hover:opacity-100 focus-visible:bg-molten-red focus-visible:border-molten-red outline-none transition-colors duration-300"

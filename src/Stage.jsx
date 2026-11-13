@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { cancelFrame, frame, motion, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import { ReactLenis, useLenis } from 'lenis/react';
+import { FileText } from 'lucide-react';
 import { cn } from './utils';
 import { SubmergedParticles } from './components/SubmergedParticles';
 import { NarrativeInterlude } from './components/NarrativeInterlude';
@@ -111,30 +112,28 @@ export const Stage = () => {
         {/* RESUME SHORTCUT */}
         <motion.div
           style={{ opacity: darkUiOpacity, pointerEvents: darkUiEvents }}
-          className="fixed top-4 right-4 md:top-12 md:right-12 z-[300]"
+          className="fixed top-4 right-4 md:top-12 md:right-12 z-[9999]"
         >
           <motion.button
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.6, duration: 1.2, ease: 'easeOut' }}
+            aria-label="View resume"
             onClick={() => {
-              play('SWOOSH_CINEMATIC', { volume: 0.4 });
+              play('whoosh');
               trigger('heavy');
               setIsFastReadOpen(true);
             }}
             onMouseEnter={() => {
-              play('HOVER_PHYSICAL', { volume: 0.1, pitch: 1.5 });
+              play('hover');
               trigger('light');
             }}
-            className="resume-pill relative px-4 md:px-8 py-2 md:py-3 border border-white/10 bg-charcoal/80 rounded-full minimal-body text-[10px] text-stark/70 hover:text-white hover:opacity-100 transition-colors group flex items-center gap-4 cursor-pointer overflow-hidden"
+            className="resume-pill relative px-4 md:px-6 py-2.5 md:py-3 border border-white/25 bg-charcoal/80 rounded-full minimal-body text-[10px] md:text-[11px] font-bold text-stark opacity-100 hover:border-molten-red hover:text-white transition-colors group flex items-center gap-3 cursor-pointer overflow-hidden"
           >
             {/* High Speed Lens Flare Sweep */}
             <span className="absolute inset-0 -translate-x-[150%] -skew-x-[20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 ease-out group-hover:translate-x-[150%]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-molten-red relative" />
-            <span className="flex flex-col items-start leading-tight relative">
-              <span className="tracking-[0.2rem]">RESUME // DATA</span>
-              <span className="text-[7px] opacity-40 group-hover:opacity-70 tracking-normal normal-case transition-opacity">Quick read</span>
-            </span>
+            <FileText className="w-3.5 h-3.5 text-molten-red relative" strokeWidth={2} />
+            <span className="relative tracking-[0.2rem]">VIEW RESUME</span>
           </motion.button>
         </motion.div>
 
@@ -157,7 +156,7 @@ export const Stage = () => {
                 aria-current={isActive ? 'true' : undefined}
                 className="flex items-center justify-end gap-4 group cursor-pointer"
                 onClick={() => {
-                  play('CLICK_MECHANICAL', { volume: 0.1 });
+                  play('click');
                   trigger('selection');
                   lenis?.scrollTo(item.target * vH, { duration: 1.6 });
                 }}
