@@ -11,6 +11,7 @@ import { useSound } from './context/SoundContext';
 import { useHaptics } from './context/HapticContext';
 import { TheMonolith } from './scenes/TheMonolith';
 import { TheArchive } from './scenes/TheArchive';
+import { TheCompanion } from './scenes/TheCompanion';
 import { TheEngine } from './scenes/TheEngine';
 import { TheFoundation } from './scenes/TheFoundation';
 import { TheInversion } from './scenes/TheInversion';
@@ -23,7 +24,7 @@ const LENIS_OPTIONS = { lerp: 0.1, smoothWheel: true, autoRaf: false };
 
 const NAV = [
   { label: 'START', range: SCENES.START, target: 0 },
-  { label: 'PROJECTS', range: SCENES.PROJECTS, target: SCENES.PROJECTS[0] + FADE },
+  { label: 'PROJECTS', range: [SCENES.PROJECTS[0], SCENES.COMPANION[1]], target: SCENES.PROJECTS[0] + FADE },
   { label: 'EXPERIENCE', range: SCENES.EXPERIENCE, target: SCENES.EXPERIENCE[0] + FADE },
   { label: 'FOUNDATION', range: SCENES.FOUNDATION, target: SCENES.FOUNDATION[0] + FADE },
   { label: 'CONTACT', range: [SCENES.CONTACT[0], Infinity], target: TOTAL_SCROLL },
@@ -72,7 +73,7 @@ export const Stage = () => {
   useMotionValueEvent(progress, 'change', (p) => setActive(activeIndexAt(p)));
 
   const goTo = (target) => {
-    play('click');
+    play('tap');
     trigger('selection');
     lenis?.scrollTo(target * vH, { duration: 1.6 });
   };
@@ -109,6 +110,7 @@ export const Stage = () => {
           <motion.main style={camera} className="absolute inset-0 will-change-transform">
             <TheMonolith progress={progress} range={SCENES.START} onSkip={() => goTo(NAV[1].target)} />
             <TheArchive progress={progress} range={SCENES.PROJECTS} />
+            <TheCompanion progress={progress} range={SCENES.COMPANION} />
             <TheEngine progress={progress} range={SCENES.EXPERIENCE} />
             <TheFoundation progress={progress} range={SCENES.FOUNDATION} />
             <TheInversion progress={progress} range={SCENES.CONTACT} />
@@ -126,7 +128,7 @@ export const Stage = () => {
             transition={{ delay: 1.6, duration: 1.2, ease: 'easeOut' }}
             aria-label="View resume"
             onClick={() => {
-              play('whoosh');
+              play('breath');
               trigger('heavy');
               setIsFastReadOpen(true);
             }}

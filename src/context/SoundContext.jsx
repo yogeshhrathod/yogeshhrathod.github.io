@@ -6,16 +6,16 @@ const STORAGE_KEY = 'sound_enabled';
 
 const readPreference = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) === 'on';
+    return localStorage.getItem(STORAGE_KEY) !== 'off';
   } catch {
-    return false;
+    return true;
   }
 };
 
 /**
- * Sound is OFF until the visitor turns it on. If they turned it on during an
- * earlier visit we honour that, but a browser will only start audio after a
- * click or key press, so we wait for the first one.
+ * Sound is ON unless the visitor has turned it off. Browsers refuse to start
+ * audio before a click, tap or key press, so the entry screen (CinematicLoader)
+ * asks for one; the listeners below are the safety net for any other path in.
  */
 export const SoundProvider = ({ children }) => {
   const [isMuted, setIsMuted] = useState(() => !readPreference());
@@ -23,6 +23,7 @@ export const SoundProvider = ({ children }) => {
   useEffect(() => {
     if (isMuted) return undefined;
     const start = () => engine.enable();
+    start(); // works straight away if the browser already trusts this site
     window.addEventListener('pointerdown', start, { once: true });
     window.addEventListener('keydown', start, { once: true });
     return () => {
@@ -31,29 +32,29 @@ export const SoundProvider = ({ children }) => {
     };
   }, [isMuted]);
 
-  const toggleMute = useCallback(() => {
-    setIsMuted((wasMuted) => {
-      const nowMuted = !wasMuted;
-      // Runs inside the click handler, which is the gesture the browser needs.
-      if (nowMuted) engine.disable();
-      else engine.enable();
-      try {
-        localStorage.setItem(STORAGE_KEY, nowMuted ? 'off' : 'on');
-      } catch {
-        /* private mode: the choice just lasts for this visit */
-      }
-      return nowMuted;
-    });
+  /** Call from inside a click / key handler: that gesture is what lets audio start. */
+  const setSoundOn = useCallback((on) => {
+    if (on) engine.enable();
+    else engine.disable();
+    try {
+      localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off');
+    } catch {
+      /* private mode: the choice just lasts for this visit */
+    }
+    setIsMuted(!on);
   }, []);
+
+  const toggleMute = useCallback(() => setSoundOn(isMuted), [isMuted, setSoundOn]);
 
   const value = useMemo(
     () => ({
       isMuted,
       toggleMute,
+      setSoundOn,
       play: (name) => engine.play(name),
       setMood: (mood) => engine.setMood(mood),
     }),
-    [isMuted, toggleMute]
+    [isMuted, toggleMute, setSoundOn]
   );
 
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>;

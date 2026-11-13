@@ -60,7 +60,7 @@ export const TheInversion = ({ progress, range }) => {
           className="mt-10 md:mt-12 inline-block group"
           onMouseEnter={hover}
           onClick={() => {
-            play('click');
+            play('tap');
             trigger('heavy');
           }}
         >

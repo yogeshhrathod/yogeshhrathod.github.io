@@ -5,18 +5,19 @@ export const FADE = 0.18;
 
 export const SCENES = {
   START: [0, 1],
-  PROJECTS: [2, 7.2],
-  EXPERIENCE: [8.2, 11.4],
-  FOUNDATION: [12.4, 14.8],
-  CONTACT: [15.8, 16.8],
+  PROJECTS: [2, 6.6],
+  COMPANION: [6.6, 8.2],
+  EXPERIENCE: [9.2, 12.4],
+  FOUNDATION: [13.4, 15.8],
+  CONTACT: [16.8, 17.8],
 };
 
 // The gaps between scenes, one per entry in `dialogues` (data/resume.js).
 export const DIALOGUE_RANGES = [
   [1, 2],
-  [7.2, 8.2],
-  [11.4, 12.4],
-  [14.8, 15.8],
+  [8.2, 9.2],
+  [12.4, 13.4],
+  [15.8, 16.8],
 ];
 
 // Scrollable distance. The page is one viewport taller than this.

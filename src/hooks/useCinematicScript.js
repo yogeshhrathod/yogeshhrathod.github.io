@@ -8,11 +8,12 @@ import { SCENES, FADE } from '../timeline';
 // Cue points use the same vh units as the scene timeline, so a sound can never
 // drift away from the picture it belongs to.
 const CUES = [
-  { at: 0.3, sound: 'whoosh', haptic: 'medium' },
-  { at: SCENES.PROJECTS[0] + FADE / 2, sound: 'impact', haptic: 'heavy' },
-  { at: SCENES.EXPERIENCE[0] + FADE / 2, sound: 'impact', haptic: 'heavy' },
-  { at: SCENES.FOUNDATION[0] + FADE / 2, sound: 'impact', haptic: 'heavy' },
-  { at: SCENES.CONTACT[0] + FADE / 2, sound: 'impact', haptic: 'heavy' },
+  { at: 0.3, sound: 'breath', haptic: 'medium' },
+  { at: SCENES.PROJECTS[0] + FADE / 2, sound: 'arrive', haptic: 'heavy' },
+  { at: SCENES.COMPANION[0] + FADE / 2, sound: 'arrive', haptic: 'medium' },
+  { at: SCENES.EXPERIENCE[0] + FADE / 2, sound: 'arrive', haptic: 'heavy' },
+  { at: SCENES.FOUNDATION[0] + FADE / 2, sound: 'arrive', haptic: 'heavy' },
+  { at: SCENES.CONTACT[0] + FADE / 2, sound: 'arrive', haptic: 'heavy' },
 ];
 
 const COOLDOWN_MS = 1200;

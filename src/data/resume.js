@@ -48,7 +48,6 @@ export const projects = [
   },
   {
     title: "QIVI",
-    preview: { src: "/previews/qivi.jpg", alt: "Qivi demo in dark mode: the particle avatar next to a chat panel" },
     live: "qivi",
     name: "Qivi",
     subtitle: "GPU particle avatar for AI assistants",
