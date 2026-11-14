@@ -66,7 +66,7 @@ export const SubmergedParticles = ({ opacity }) => {
     <motion.canvas
       ref={canvasRef}
       style={{ opacity }}
-      className="fixed inset-0 pointer-events-none z-[10001]"
+      className="fixed inset-0 pointer-events-none z-0"
     />
   );
 };

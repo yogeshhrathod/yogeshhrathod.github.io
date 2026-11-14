@@ -86,6 +86,7 @@ export const Stage = () => {
   const contact = SCENES.CONTACT[0];
   const particleOpacity = useTransform(progress, [contact - 0.4, contact], [0.5, 0]);
   const darkUiOpacity = useTransform(progress, [contact - 0.2, contact + 0.1], [1, 0]);
+  const vignetteOpacity = useTransform(progress, [contact - 0.3, contact], [1, 0.3]);
   const darkUiEvents = useTransform(darkUiOpacity, (o) => (o > 0.5 ? 'auto' : 'none'));
 
   return (
@@ -93,7 +94,7 @@ export const Stage = () => {
       <ReactLenis root options={LENIS_OPTIONS} />
 
       <div className="relative bg-charcoal" style={{ height: (TOTAL_SCROLL + 1) * vH }}>
-        <div className="vignette" />
+        <motion.div className="vignette" style={{ opacity: vignetteOpacity }} />
         <div className="ambient-pool" />
         <SubmergedParticles opacity={particleOpacity} />
         <NarrativeInterlude progress={progress} ranges={DIALOGUE_RANGES} />
@@ -151,7 +152,7 @@ export const Stage = () => {
         <nav
           aria-label="Sections"
           className={cn(
-            'flex fixed right-1.5 md:right-12 top-1/2 -translate-y-1/2 flex-col md:gap-8 z-50 mix-blend-difference transition-opacity duration-500',
+            'flex fixed right-1.5 md:right-12 top-1/2 -translate-y-1/2 flex-col md:gap-3 z-50 mix-blend-difference transition-opacity duration-500',
             isFastReadOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
           )}
         >
@@ -163,18 +164,18 @@ export const Stage = () => {
                 type="button"
                 aria-current={isActive ? 'true' : undefined}
                 aria-label={item.label}
-                className="flex items-center justify-end gap-4 group cursor-pointer py-3 pl-5 md:p-0"
+                className="flex items-center justify-end gap-4 group cursor-pointer py-3 pl-5 md:py-2"
                 onClick={() => goTo(item.target)}
               >
                 <span className={cn(
-                  'hidden md:inline minimal-body text-[10px] tracking-[0.3rem] transition-all duration-300',
-                  isActive ? 'text-molten-red opacity-100' : 'text-stark opacity-20 group-hover:opacity-100'
+                  'hidden md:inline minimal-body text-[10px] transition-all duration-300 translate-x-2 group-hover:translate-x-0 group-focus-visible:translate-x-0',
+                  isActive ? 'text-molten-red opacity-0 group-hover:opacity-100' : 'text-stark opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'
                 )}>
                   {item.label}
                 </span>
                 <span className={cn(
                   'h-0.5 md:h-px transition-all duration-300',
-                  isActive ? 'bg-molten-red w-3 md:w-24' : 'bg-white/40 md:bg-white/20 w-1.5 md:w-4 md:group-hover:w-12'
+                  isActive ? 'bg-molten-red w-3 md:w-10' : 'bg-white/40 md:bg-white/30 w-1.5 md:w-4 md:group-hover:w-7'
                 )} />
               </button>
             );

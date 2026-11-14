@@ -5,11 +5,13 @@
   --color-charcoal: #121110;
   --color-silver-birch: #e8e4df;
   --color-muted-ochre: #8c7a6b;
-  --color-molten-red: #a6341b;
+  /* One accent, bright enough to read as small text on the dark ground */
+  --color-molten-red: #e2603a;
   --color-stark: #e8e4df;
-  
-  --font-titan: "Inter", system-ui, sans-serif;
-  --font-serif: "EB Garamond", serif;
+
+  --font-titan: "Archivo", "Geist", system-ui, sans-serif;
+  --font-sans: "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
 @layer base {
@@ -17,7 +19,7 @@
     --obsidian: #0d0d0d;
     --charcoal: #121110;
     --stark: #e8e4df;
-    --molten: #a6341b;
+    --molten: #e2603a;
     --ochre: #8c7a6b;
   }
 
@@ -26,8 +28,9 @@
     color: var(--stark);
     overflow-x: clip;
     margin: 0;
-    font-family: var(--font-titan);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* Material Texture Overlay */
@@ -61,7 +64,7 @@
     background-size: 100% 4px;
     z-index: 9999;
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.12;
   }
 
   /* Heavy Vignette */
@@ -99,18 +102,17 @@
   }
 }
 
-@layer utilities {
+/* Components layer: Tailwind utilities on the element (opacity, tracking, colour) override these */
+@layer components {
   .titan-title {
+    font-family: var(--font-titan);
     font-weight: 900;
     font-style: italic;
-    letter-spacing: 0.2rem;
+    font-stretch: 125%;
+    font-variation-settings: "wdth" 125;
+    letter-spacing: 0.01em;
     line-height: 0.9;
     text-transform: uppercase;
-  }
-  @media (min-width: 768px) {
-    .titan-title {
-      letter-spacing: 0.8rem;
-    }
   }
 
   .titan-subtitle {
@@ -122,11 +124,75 @@
   }
 
   .minimal-body {
+    font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.2rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     font-weight: 500;
     opacity: 0.8;
+  }
+
+  /* Text link: a hairline underline, swept over in the accent on hover */
+  .link-line {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--stark);
+    transition: color 0.3s ease;
+  }
+  .link-line::before,
+  .link-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+  }
+  .link-line::before {
+    background: currentColor;
+    opacity: 0.3;
+  }
+  .link-line::after {
+    background: var(--molten);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-line:hover,
+  .link-line:focus-visible {
+    color: #fff;
+  }
+  .link-line:hover::after,
+  .link-line:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .link-line svg {
+    transition: transform 0.3s ease;
+  }
+  .link-line:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  /* A giant hollow numeral, used where a project has no image */
+  .outline-num {
+    font-family: var(--font-titan);
+    font-weight: 900;
+    font-style: italic;
+    font-stretch: 125%;
+    font-variation-settings: "wdth" 125;
+    font-size: clamp(9rem, 20vw, 17rem);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(232, 228, 223, 0.22);
   }
 
   .text-shadow-molten {
@@ -292,6 +358,14 @@
   z-index: 99999;
   pointer-events: none;
   background: white;
+}
+
+/* In the base layer so a single element can opt out with focus-visible:outline-none */
+@layer base {
+  :focus-visible {
+    outline: 1px solid var(--molten);
+    outline-offset: 4px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -78,7 +78,7 @@ export const TheCompanion = ({ progress, range }) => {
           )}
         </div>
 
-        <motion.div style={{ opacity: uiOpacity }} className="mt-4 md:mt-6 flex flex-wrap justify-center gap-3">
+        <motion.div style={{ opacity: uiOpacity }} className="mt-4 md:mt-6 flex flex-wrap justify-center gap-x-8 gap-y-1">
           {qivi.links.map((link) => (
             <a
               key={link.href}
@@ -89,7 +89,7 @@ export const TheCompanion = ({ progress, range }) => {
                 play('hover');
                 trigger('light');
               }}
-              className="minimal-body text-[10px] font-bold border border-white/30 px-5 py-3 inline-flex items-center gap-2 hover:bg-molten-red hover:border-molten-red hover:text-white hover:opacity-100 focus-visible:bg-molten-red focus-visible:border-molten-red outline-none transition-colors duration-300"
+              className="link-line"
             >
               {link.label}
               <ArrowUpRight className="w-3 h-3" strokeWidth={2} />

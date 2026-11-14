@@ -4,8 +4,8 @@ import { ChevronDown } from 'lucide-react';
 import { useSceneStyle } from '../hooks/useSceneStyle';
 import { profile } from '../data/resume';
 
-const TITLE_CLASS = 'titan-title text-[14vw] md:text-[15vw] leading-none text-center select-none';
-const TITLE_STYLE = { letterSpacing: '0.2em', marginRight: '-0.2em' };
+const TITLE_CLASS = 'titan-title text-[13.5vw] md:text-[12.5vw] leading-[0.86] text-center select-none';
+const TITLE_STYLE = { letterSpacing: '0.04em', marginRight: '-0.04em' };
 // Only opacity / transform / filter are animated: nothing here triggers layout.
 const TITLE_INTRO = {
   initial: { filter: 'blur(18px)', opacity: 0, scale: 0.86 },
@@ -90,8 +90,8 @@ export const TheMonolith = ({ progress, range, onSkip }) => {
           transition={{ duration: 1.2, delay: 0.9, ease: 'easeOut' }}
           className="mt-8 md:mt-12 flex flex-col items-center gap-4 md:gap-6 px-6 text-center"
         >
-          <span className="minimal-body text-molten-red opacity-100 font-bold text-xs md:text-xl tracking-[0.3rem] md:tracking-[0.8rem]">{profile.tagline}</span>
-          <span className="minimal-body italic opacity-80 text-[10px] md:text-sm">
+          <span className="minimal-body text-molten-red opacity-100 font-bold text-xs md:text-xl tracking-[0.18em] md:tracking-[0.28em]">{profile.tagline}</span>
+          <span className="text-sm md:text-lg text-stark/70 font-light tracking-tight">
             {profile.title} / {profile.focus} / {profile.location}
           </span>
         </motion.div>
@@ -118,14 +118,14 @@ export const TheMonolith = ({ progress, range, onSkip }) => {
           transition={{ delay: 2, duration: 1.2 }}
           className="flex flex-col items-center gap-2"
         >
-          <span className="minimal-body text-[9px] opacity-60 tracking-[0.4rem]">SCROLL</span>
+          <span className="minimal-body text-[9px] opacity-60">SCROLL</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}>
             <ChevronDown className="w-4 h-4 text-stark/60" strokeWidth={1.5} />
           </motion.div>
           <button
             type="button"
             onClick={onSkip}
-            className="mt-2 minimal-body text-[9px] tracking-[0.3rem] text-stark opacity-60 hover:opacity-100 hover:text-molten-red underline underline-offset-4 decoration-white/30 cursor-pointer transition-colors"
+            className="mt-2 minimal-body text-[10px] text-stark opacity-70 hover:opacity-100 hover:text-molten-red underline underline-offset-4 decoration-white/30 cursor-pointer transition-colors"
           >
             OR SKIP TO PROJECTS
           </button>
